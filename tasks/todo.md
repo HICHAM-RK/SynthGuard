@@ -146,14 +146,14 @@
 
 **Acceptance criteria:**
 
-- [ ] CTGAN produces exactly the requested row count on CPU.
-- [ ] Test configuration limits training time without changing production defaults silently.
-- [ ] The public contract remains unchanged from Task 5.
+- [x] CTGAN produces exactly the requested row count on CPU.
+- [x] Test configuration limits training time without changing production defaults silently.
+- [x] The generation contract remains unchanged from Task 5.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/data_core/test_synthesis.py -k ctgan -q`
-- [ ] Run one tiny CPU generation and record its duration in the result.
+- [x] `uv run pytest tests/data_core/test_synthesis.py -k ctgan -q` — 2 passed.
+- [x] One tiny CPU generation records its duration in the result.
 
 **Dependencies:** Task 5
 

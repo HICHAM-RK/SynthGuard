@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from time import perf_counter
-from typing import Any
+from typing import Any, Protocol, cast
 
 import pandas as pd
 from sdv.metadata import Metadata
-from sdv.single_table import GaussianCopulaSynthesizer
+from sdv.single_table import CTGANSynthesizer, GaussianCopulaSynthesizer
 
 from .contracts import (
     DataCoreError,
@@ -35,22 +35,43 @@ class GeneratedCandidate:
     warnings: tuple[DatasetWarning, ...]
 
 
-def synthesize_candidate_data(request: GenerationRequest) -> GeneratedCandidate:
+@dataclass(frozen=True, slots=True)
+class SynthesisOptions:
+    """Internal tuning options; safe CPU defaults remain independent from tests."""
+
+    ctgan_epochs: int = 300
+    ctgan_batch_size: int = 500
+    ctgan_pac: int = 10
+    ctgan_enable_gpu: bool = False
+
+    def __post_init__(self) -> None:
+        if self.ctgan_epochs < 1:
+            raise ValueError("ctgan_epochs must be positive")
+        if self.ctgan_batch_size < 1:
+            raise ValueError("ctgan_batch_size must be positive")
+        if self.ctgan_pac < 1 or self.ctgan_batch_size % self.ctgan_pac:
+            raise ValueError("ctgan_batch_size must be divisible by ctgan_pac")
+
+
+class _Synthesizer(Protocol):
+    def fit(self, data: pd.DataFrame) -> None: ...
+
+    def sample(self, num_rows: int) -> pd.DataFrame: ...
+
+
+def synthesize_candidate_data(
+    request: GenerationRequest,
+    *,
+    options: SynthesisOptions | None = None,
+) -> GeneratedCandidate:
     """Train the requested adapter and return generated rows in memory."""
 
     loaded = read_validated_csv(ProfileRequest(source_path=request.source_path))
     profile = build_profile(loaded)
     metadata_dict = build_sdv_metadata(profile, request.column_overrides)
 
-    if request.method is not GenerationMethod.GAUSSIAN_COPULA:
-        raise DataCoreError(
-            "UNSUPPORTED_METHOD",
-            "The requested synthesis method is not available.",
-            {"method": request.method.value},
-        )
-
     metadata = Metadata.load_from_dict(metadata_dict)
-    synthesizer = GaussianCopulaSynthesizer(metadata)
+    synthesizer = _build_synthesizer(request.method, metadata, options or SynthesisOptions())
     started_at = perf_counter()
     try:
         synthesizer.fit(loaded.frame)
@@ -87,4 +108,30 @@ def synthesize_candidate_data(request: GenerationRequest) -> GeneratedCandidate:
                 ),
             ),
         ),
+    )
+
+
+def _build_synthesizer(
+    method: GenerationMethod,
+    metadata: Metadata,
+    options: SynthesisOptions,
+) -> _Synthesizer:
+    if method is GenerationMethod.GAUSSIAN_COPULA:
+        return cast(_Synthesizer, GaussianCopulaSynthesizer(metadata))
+    if method is GenerationMethod.CTGAN:
+        return cast(
+            _Synthesizer,
+            CTGANSynthesizer(
+                metadata,
+                epochs=options.ctgan_epochs,
+                batch_size=options.ctgan_batch_size,
+                pac=options.ctgan_pac,
+                enable_gpu=options.ctgan_enable_gpu,
+                verbose=False,
+            ),
+        )
+    raise DataCoreError(
+        "UNSUPPORTED_METHOD",
+        "The requested synthesis method is not available.",
+        {"method": method.value},
     )
