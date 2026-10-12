@@ -239,15 +239,15 @@
 
 **Acceptance criteria:**
 
-- [ ] Requests reject empty paths and out-of-range privacy sampling limits.
-- [ ] Result score fields reject values outside `[0, 1]` while distances remain non-negative.
-- [ ] Only intended public names are exported from `synthguard.evaluation_core`.
+- [x] Requests reject empty paths and out-of-range privacy sampling limits.
+- [x] Result score fields reject values outside `[0, 1]` while distances remain non-negative.
+- [x] Only intended public names are exported from `synthguard.evaluation_core`.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/evaluation_core/test_contracts.py -q`
-- [ ] `uv run ruff check . && uv run ruff format --check .`
-- [ ] `uv run mypy src/synthguard`
+- [x] `uv run pytest tests/evaluation_core/test_contracts.py -q`
+- [x] `uv run ruff check . && uv run ruff format --check .`
+- [x] `uv run mypy src/synthguard`
 
 **Dependencies:** Implemented `data-core`
 
