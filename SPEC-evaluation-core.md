@@ -223,7 +223,9 @@ def evaluate_candidate(request: EvaluationRequest) -> EvaluationResult:
     pair = load_evaluation_pair(request)
     statistical = evaluate_statistical_quality(pair)
     privacy = evaluate_privacy_evidence(pair, request)
-    utility = evaluate_classification_utility(pair, request) if request.classification_target else None
+    utility = (
+        evaluate_classification_utility(pair, request) if request.classification_target else None
+    )
     return assemble_result(pair, statistical, privacy, utility)
 ```
 

@@ -265,14 +265,14 @@
 
 **Acceptance criteria:**
 
-- [ ] Valid artifacts produce one immutable internal pair without modifying inputs.
-- [ ] Missing, empty, malformed, mismatched, and invalid-metadata artifacts return stable errors.
-- [ ] Unknown or unusable classification targets fail before metric work starts.
+- [x] Valid artifacts produce one immutable internal pair without modifying inputs.
+- [x] Missing, empty, malformed, mismatched, and invalid-metadata artifacts return stable errors.
+- [x] Unknown or unusable classification targets fail before metric work starts.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/evaluation_core/test_validation.py -q`
-- [ ] Automated checks confirm all source checksums remain unchanged.
+- [x] `uv run pytest tests/evaluation_core/test_validation.py -q`
+- [x] Automated checks confirm all source checksums remain unchanged.
 
 **Dependencies:** Evaluation Task 1
 
@@ -287,9 +287,9 @@
 
 ## Checkpoint: Trusted evaluation inputs
 
-- [ ] Evaluation Tasks 1-2 have evidence for every acceptance criterion.
-- [ ] Tests, Ruff, formatting, and mypy pass.
-- [ ] Errors contain no fixture values or unrestricted paths.
+- [x] Evaluation Tasks 1-2 have evidence for every acceptance criterion.
+- [x] Tests, Ruff, formatting, and mypy pass.
+- [x] Errors contain no fixture values or unrestricted paths.
 
 ## Evaluation Task 3: Measure statistical fidelity
 
