@@ -75,6 +75,7 @@ class PrivacyEvidenceResult(ContractModel):
     dcr_baseline_protection_score: float = Field(ge=0.0, le=1.0)
     sampled_real_rows: int = Field(ge=0)
     sampled_synthetic_rows: int = Field(ge=0)
+    sampling_seed: int
     excluded_identifier_columns: tuple[str, ...] = ()
     metric_provenance: str = Field(min_length=1)
 

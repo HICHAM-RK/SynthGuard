@@ -151,6 +151,7 @@ def _privacy_evidence(**overrides: float) -> PrivacyEvidenceResult:
         "dcr_baseline_protection_score": 0.85,
         "sampled_real_rows": 100,
         "sampled_synthetic_rows": 100,
+        "sampling_seed": 42,
         "excluded_identifier_columns": ("customer_id",),
         "metric_provenance": "normalized mixed-type distance and SDMetrics DCR",
     }

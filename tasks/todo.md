@@ -321,13 +321,13 @@
 
 **Acceptance criteria:**
 
-- [ ] Exact copied rows, including normalized nulls, are counted correctly.
-- [ ] Identifier columns are excluded from bounded distance calculations and sampling is reproducible.
-- [ ] DCR and distance failures return `PRIVACY_EVALUATION_FAILED` without leaking rows.
+- [x] Exact copied rows, including normalized nulls, are counted correctly.
+- [x] Identifier columns are excluded from bounded distance calculations and sampling is reproducible.
+- [x] DCR and distance failures return `PRIVACY_EVALUATION_FAILED` without leaking rows.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/evaluation_core/test_privacy.py -q -W error`
+- [x] `uv run pytest tests/evaluation_core/test_privacy.py -q -W error`
 
 **Dependencies:** Evaluation Task 2
 
@@ -341,9 +341,9 @@
 
 ## Checkpoint: Statistical and privacy evidence
 
-- [ ] Evaluation Tasks 3-4 pass independently and together.
-- [ ] Metrics expose methodology and bounded sampling details.
-- [ ] No pass/fail decision exists in evaluation-core.
+- [x] Evaluation Tasks 3-4 pass independently and together.
+- [x] Metrics expose methodology and bounded sampling details.
+- [x] No pass/fail decision exists in evaluation-core.
 
 ## Evaluation Task 5: Measure classification utility
 
