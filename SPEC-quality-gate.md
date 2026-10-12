@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved for implementation. This specification defines the third module in `CAPABILITY_MAP.md` and consumes only the public `evaluation-core` contract.
+Implemented and verified. This specification defines the third module in `CAPABILITY_MAP.md` and consumes only the public `evaluation-core` contract.
 
 ## Objective
 
@@ -65,7 +65,8 @@ Scores are clamped to `[0, 1]`. A utility retention above `1` contributes `1`. R
 
 - Pydantic `ValidationError` for malformed policies and requests.
 - `QualityGateError("DUPLICATE_CANDIDATE_ID", ...)` for duplicate ids.
-- `QualityGateError("INCONSISTENT_UTILITY", ...)` when a required utility result is absent.
+
+When utility is required but absent, the candidate receives an explicit failed utility criterion so other candidates can still be evaluated.
 
 Failures never include raw source rows or cell values.
 

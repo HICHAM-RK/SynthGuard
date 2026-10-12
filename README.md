@@ -2,7 +2,7 @@
 
 SynthGuard is a local-first synthetic-data quality gate. Its goal is to generate candidate tabular datasets, measure whether they remain useful without copying source records too closely, and expose reproducible decisions through a Streamlit studio and MCP tools.
 
-The implemented `data-core` and `evaluation-core` modules safely generate immutable Gaussian Copula or CTGAN runs, then compare each candidate with its source using statistical fidelity, privacy-risk, and optional ML-utility evidence. The pass/fail gate, Streamlit studio, and MCP server are tracked as the next modules in `CAPABILITY_MAP.md`.
+The implemented `data-core`, `evaluation-core`, and `quality-gate` modules safely generate immutable Gaussian Copula or CTGAN runs, compare each candidate with its source, and apply explicit thresholds to select the strongest passing candidate. The Streamlit studio and MCP server are tracked as the next modules in `CAPABILITY_MAP.md`.
 
 ## Why this project exists
 
@@ -21,6 +21,7 @@ Development and ML teams need realistic data, but real customer or operational d
 - SDMetrics DCR baseline protection with explicit metric provenance
 - Optional leakage-safe classification utility using weighted F1 on held-out real rows
 - One typed, JSON-serializable evaluation result shared by future interfaces
+- Configurable, explainable pass/fail thresholds with deterministic candidate ranking
 - Structured errors that avoid echoing source values or unrestricted paths
 - Offline automated tests, static typing, linting, and formatting gates
 
@@ -86,6 +87,28 @@ print(evaluation.privacy.dcr_baseline_protection_score)
 print(evaluation.utility.utility_retention if evaluation.utility else None)
 ```
 
+Apply explicit thresholds and compare candidates:
+
+```python
+from synthguard.quality_gate import CandidateEvidence, GatePolicy, GateRequest, apply_quality_gate
+
+gate = apply_quality_gate(
+    GateRequest(
+        candidates=(CandidateEvidence(candidate_id="gaussian", evaluation=evaluation),),
+        policy=GatePolicy(
+            min_statistical_score=0.75,
+            max_exact_match_rate=0.0,
+            max_near_duplicate_rate=0.05,
+            min_dcr_score=0.5,
+            min_utility_retention=0.8,
+        ),
+    )
+)
+
+print(gate.winner_candidate_id)
+print(gate.candidates[0].failed_criteria)
+```
+
 Each successful run creates:
 
 ```text
@@ -111,6 +134,7 @@ uv run mypy src/synthguard
 - `CAPABILITY_MAP.md` defines module ownership and build order.
 - `SPEC-data-core.md` defines the implemented module contract.
 - `SPEC-evaluation-core.md` defines the implemented evidence contract.
+- `SPEC-quality-gate.md` defines the implemented decision and ranking contract.
 - `tasks/plan.md` records architecture decisions and risks.
 - `tasks/todo.md` records acceptance criteria and verification evidence.
 - `AGENTS.md` defines the rules Codex and other coding agents must follow.
@@ -123,8 +147,8 @@ uv run mypy src/synthguard
 - Synthetic output is not automatically anonymous, private, or compliant.
 - Exact matches, near-neighbor distances, and DCR are risk indicators—not privacy guarantees.
 - Statistical and ML scores describe this candidate under documented baselines; they do not prove fitness for every workload.
-- `evaluation-core` returns independent evidence only. It does not accept, reject, rank, or approve a candidate; those deterministic decisions belong to the future `quality-gate` module.
+- `evaluation-core` returns independent evidence only. `quality-gate` applies user-visible thresholds and rankings, but a passing result is still not a privacy or compliance certification.
 - The locked SDV API controls internal sampling state, so exact output may differ across dependency versions even when the requested seed is unchanged.
 - Do not commit source datasets or generated user runs.
 
-SynthGuard will only call a candidate “accepted” after the future quality-gate module applies explicit user thresholds to this evidence. Generated artifacts and evaluation results remain candidates, not approved safe datasets.
+SynthGuard calls a candidate “passing” only under the exact policy returned with the gate result. Generated artifacts remain synthetic candidates, not approved safe datasets.
