@@ -121,14 +121,14 @@
 
 **Acceptance criteria:**
 
-- [ ] The adapter trains from reviewed metadata and produces exactly the requested rows.
-- [ ] Unsupported methods and training failures preserve stable public errors.
+- [x] The Gaussian adapter trains from reviewed metadata and produces exactly the requested rows.
+- [x] Unsupported methods and training failures preserve stable public errors.
 - [ ] Method-specific objects do not leak through the public result contract.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/data_core/test_synthesis.py -k gaussian -q`
-- [ ] Generate a 50-row candidate from the committed customer fixture.
+- [x] `uv run pytest tests/data_core/test_synthesis.py -k gaussian -q` — 3 passed.
+- [x] Generated a 50-row in-memory candidate from the committed fixture.
 
 **Dependencies:** Task 4
 

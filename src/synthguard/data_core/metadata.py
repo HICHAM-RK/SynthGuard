@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from sdv.metadata import SingleTableMetadata
+from sdv.metadata import Metadata
 
-from .contracts import DataCoreError, DatasetProfile, PhysicalType, SemanticType
+from .contracts import ColumnProfile, DataCoreError, DatasetProfile, PhysicalType, SemanticType
 
 _ALLOWED_OVERRIDES: dict[PhysicalType, frozenset[SemanticType]] = {
     PhysicalType.INTEGER: frozenset(
@@ -43,14 +43,20 @@ def build_sdv_metadata(
         if semantic_type is SemanticType.IDENTIFIER and column.unique_rate < 0.9:
             raise _incompatible_override(column_name, semantic_type)
 
-    metadata: dict[str, Any] = {
-        "columns": {
-            column.name: {"sdtype": _to_sdv_type(requested.get(column.name, column.semantic_type))}
-            for column in profile.columns
-        },
-        "METADATA_SPEC_VERSION": "SINGLE_TABLE_V1",
+    columns = {
+        column.name: _column_metadata(column, requested.get(column.name, column.semantic_type))
+        for column in profile.columns
     }
-    SingleTableMetadata.load_from_dict(metadata).validate()
+    metadata: dict[str, Any] = {
+        "tables": {
+            "table": {
+                "columns": columns,
+            }
+        },
+        "relationships": [],
+        "METADATA_SPEC_VERSION": "V1",
+    }
+    Metadata.load_from_dict(metadata).validate()
     return metadata
 
 
@@ -71,3 +77,11 @@ def _to_sdv_type(semantic_type: SemanticType) -> str:
         SemanticType.IDENTIFIER: "id",
         SemanticType.UNKNOWN: "categorical",
     }[semantic_type]
+
+
+def _column_metadata(column: ColumnProfile, semantic_type: SemanticType) -> dict[str, str]:
+    metadata = {"sdtype": _to_sdv_type(semantic_type)}
+    datetime_format = column.safe_summary.get("datetime_format")
+    if semantic_type is SemanticType.DATETIME and isinstance(datetime_format, str):
+        metadata["datetime_format"] = datetime_format
+    return metadata

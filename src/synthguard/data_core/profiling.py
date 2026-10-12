@@ -15,7 +15,7 @@ from .contracts import (
     ProfileRequest,
     SemanticType,
 )
-from .ingestion import read_validated_csv
+from .ingestion import LoadedDataset, read_validated_csv
 
 _SENSITIVE_NAME_PARTS = {
     "address",
@@ -33,6 +33,12 @@ def profile_csv(request: ProfileRequest) -> DatasetProfile:
     """Validate and profile one CSV without returning raw source values."""
 
     loaded = read_validated_csv(request)
+    return build_profile(loaded)
+
+
+def build_profile(loaded: LoadedDataset) -> DatasetProfile:
+    """Build a deterministic profile from an already validated dataset."""
+
     columns = tuple(_profile_column(name, loaded.frame[name]) for name in loaded.frame.columns)
     warnings = tuple(warning for column in columns for warning in _warnings_for(column))
     metadata = {
@@ -141,7 +147,10 @@ def _safe_summary(series: pd.Series[Any], semantic_type: SemanticType) -> dict[s
         }
     if semantic_type is SemanticType.DATETIME:
         parsed = pd.to_datetime(non_null, errors="coerce", format="mixed")
-        return {"valid_datetime_count": int(parsed.notna().sum())}
+        summary: dict[str, Any] = {"valid_datetime_count": int(parsed.notna().sum())}
+        if len(non_null) and non_null.astype(str).str.fullmatch(r"\d{4}-\d{2}-\d{2}").all():
+            summary["datetime_format"] = "%Y-%m-%d"
+        return summary
     lengths = non_null.astype(str).str.len()
     return {
         "non_null_count": len(non_null),
