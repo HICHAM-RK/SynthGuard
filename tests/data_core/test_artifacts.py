@@ -46,11 +46,21 @@ def test_persisted_run_contains_required_artifacts_and_checksums(tmp_path: Path)
     assert len(pd.read_csv(result.artifacts.synthetic_csv)) == request.row_count
 
     manifest = json.loads(result.artifacts.manifest_json.read_text(encoding="utf-8"))
+    metadata = json.loads(result.artifacts.metadata_json.read_text(encoding="utf-8"))
     assert manifest["run_id"] == str(RUN_ID)
     assert manifest["method"] == "gaussian_copula"
     assert manifest["row_count"] == request.row_count
     assert manifest["random_seed"] == 42
     assert manifest["dependencies"]["sdv"]
+    assert list(metadata["tables"]["table"]["columns"]) == [
+        "customer_id",
+        "age",
+        "income",
+        "is_member",
+        "joined_at",
+        "segment",
+        "email",
+    ]
     for artifact_name in ("synthetic.csv", "metadata.json"):
         artifact = result.artifacts.manifest_json.parent / artifact_name
         assert (

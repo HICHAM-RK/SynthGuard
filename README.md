@@ -2,7 +2,7 @@
 
 SynthGuard is a local-first synthetic-data quality gate. Its goal is to generate candidate tabular datasets, measure whether they remain useful without copying source records too closely, and expose reproducible decisions through a Streamlit studio and MCP tools.
 
-The first implemented module, `data-core`, safely profiles one CSV and generates immutable Gaussian Copula or CTGAN runs. Quality, privacy, ML-utility evaluation, the pass/fail gate, Streamlit, and MCP are tracked as the next modules in `CAPABILITY_MAP.md`.
+The implemented `data-core` and `evaluation-core` modules safely generate immutable Gaussian Copula or CTGAN runs, then compare each candidate with its source using statistical fidelity, privacy-risk, and optional ML-utility evidence. The pass/fail gate, Streamlit studio, and MCP server are tracked as the next modules in `CAPABILITY_MAP.md`.
 
 ## Why this project exists
 
@@ -16,6 +16,11 @@ Development and ML teams need realistic data, but real customer or operational d
 - Gaussian Copula and CPU CTGAN generation through one contract
 - Immutable run directories containing synthetic CSV, metadata, and a manifest
 - SHA-256 source fingerprints and artifact checksums
+- SDMetrics statistical quality scores for distributions and column relationships
+- Exact-copy detection plus seeded, bounded mixed-type nearest-neighbor evidence
+- SDMetrics DCR baseline protection with explicit metric provenance
+- Optional leakage-safe classification utility using weighted F1 on held-out real rows
+- One typed, JSON-serializable evaluation result shared by future interfaces
 - Structured errors that avoid echoing source values or unrestricted paths
 - Offline automated tests, static typing, linting, and formatting gates
 
@@ -60,6 +65,27 @@ print(result.artifacts.synthetic_csv)
 print(result.artifacts.manifest_json)
 ```
 
+Evaluate the generated candidate:
+
+```python
+from synthguard.evaluation_core import EvaluationRequest, evaluate_candidate
+
+evaluation = evaluate_candidate(
+    EvaluationRequest(
+        real_csv=source,
+        synthetic_csv=result.artifacts.synthetic_csv,
+        metadata_json=result.artifacts.metadata_json,
+        classification_target="churned",  # Optional categorical or boolean target
+        random_seed=42,
+    )
+)
+
+print(evaluation.statistical.overall_score)
+print(evaluation.privacy.exact_match_count)
+print(evaluation.privacy.dcr_baseline_protection_score)
+print(evaluation.utility.utility_retention if evaluation.utility else None)
+```
+
 Each successful run creates:
 
 ```text
@@ -84,6 +110,7 @@ uv run mypy src/synthguard
 
 - `CAPABILITY_MAP.md` defines module ownership and build order.
 - `SPEC-data-core.md` defines the implemented module contract.
+- `SPEC-evaluation-core.md` defines the implemented evidence contract.
 - `tasks/plan.md` records architecture decisions and risks.
 - `tasks/todo.md` records acceptance criteria and verification evidence.
 - `AGENTS.md` defines the rules Codex and other coding agents must follow.
@@ -94,7 +121,10 @@ uv run mypy src/synthguard
 - Only one CSV table is supported in the current module.
 - Sensitive-column detection is advisory and must be reviewed by a person.
 - Synthetic output is not automatically anonymous, private, or compliant.
+- Exact matches, near-neighbor distances, and DCR are risk indicators—not privacy guarantees.
+- Statistical and ML scores describe this candidate under documented baselines; they do not prove fitness for every workload.
+- `evaluation-core` returns independent evidence only. It does not accept, reject, rank, or approve a candidate; those deterministic decisions belong to the future `quality-gate` module.
 - The locked SDV API controls internal sampling state, so exact output may differ across dependency versions even when the requested seed is unchanged.
 - Do not commit source datasets or generated user runs.
 
-SynthGuard will only call a candidate “accepted” after the future evaluation and quality-gate modules provide measurable evidence. Current generation artifacts should be treated as candidates, not approved safe datasets.
+SynthGuard will only call a candidate “accepted” after the future quality-gate module applies explicit user thresholds to this evidence. Generated artifacts and evaluation results remain candidates, not approved safe datasets.

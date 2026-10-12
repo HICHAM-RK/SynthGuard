@@ -46,7 +46,7 @@ def persist_candidate(
 
         candidate.frame.to_csv(synthetic_path, index=False)
         metadata_path.write_text(
-            json.dumps(candidate.reviewed_metadata, indent=2, sort_keys=True) + "\n",
+            json.dumps(candidate.reviewed_metadata, indent=2) + "\n",
             encoding="utf-8",
         )
         manifest = _build_manifest(candidate, selected_run_id, synthetic_path, metadata_path)

@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved for implementation. This specification defines the second module in `CAPABILITY_MAP.md` and depends on the implemented `data-core` contract.
+Implemented and verified. This specification defines the second module in `CAPABILITY_MAP.md` and depends on the implemented `data-core` contract.
 
 ## Assumptions
 

@@ -399,15 +399,15 @@
 
 **Acceptance criteria:**
 
-- [ ] Gaussian and constrained CTGAN artifacts can be evaluated end to end.
-- [ ] Evaluation-core reaches at least 90% statement coverage with all project tests passing offline.
-- [ ] Documentation distinguishes risk evidence from privacy guarantees and evaluation from quality-gate decisions.
+- [x] Gaussian and constrained CTGAN artifacts can be evaluated end to end.
+- [x] Evaluation-core reaches at least 90% statement coverage with all project tests passing offline.
+- [x] Documentation distinguishes risk evidence from privacy guarantees and evaluation from quality-gate decisions.
 
 **Verification:**
 
-- [ ] `uv run pytest --cov=synthguard.evaluation_core --cov-report=term-missing --cov-fail-under=90`
-- [ ] `uv run ruff check . && uv run ruff format --check .`
-- [ ] `uv run mypy src/synthguard`
+- [x] `uv run pytest --cov=synthguard.evaluation_core --cov-report=term-missing --cov-fail-under=90`
+- [x] `uv run ruff check . && uv run ruff format --check .`
+- [x] `uv run mypy src/synthguard`
 
 **Dependencies:** Evaluation Task 6
 
@@ -422,6 +422,6 @@
 
 ## Checkpoint: `evaluation-core` complete
 
-- [ ] Every specification success criterion has direct verification evidence.
-- [ ] Full project tests and static quality gates pass offline.
-- [ ] The next module, `quality-gate`, may begin specification review.
+- [x] Every specification success criterion has direct verification evidence.
+- [x] Full project tests and static quality gates pass offline.
+- [x] The next module, `quality-gate`, may begin specification review.
