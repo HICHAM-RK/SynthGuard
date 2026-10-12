@@ -11,6 +11,7 @@ from .contracts import (
     StatisticalQualityResult,
     WeakArea,
 )
+from .service import evaluate_candidate
 
 __all__ = [
     "ClassificationUtilityResult",
@@ -22,4 +23,5 @@ __all__ = [
     "PrivacyEvidenceResult",
     "StatisticalQualityResult",
     "WeakArea",
+    "evaluate_candidate",
 ]

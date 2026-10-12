@@ -375,13 +375,13 @@
 
 **Acceptance criteria:**
 
-- [ ] A valid request returns JSON-serializable statistical and privacy evidence.
-- [ ] Utility is present only when a target is requested.
-- [ ] Fingerprints, row counts, warnings, and elapsed time are returned without raw values.
+- [x] A valid request returns JSON-serializable statistical and privacy evidence.
+- [x] Utility is present only when a target is requested.
+- [x] Fingerprints, row counts, warnings, and elapsed time are returned without raw values.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/evaluation_core/test_service.py -q`
+- [x] `uv run pytest tests/evaluation_core/test_service.py -q`
 
 **Dependencies:** Evaluation Tasks 3-5
 

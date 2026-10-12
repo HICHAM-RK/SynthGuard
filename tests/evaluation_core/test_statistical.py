@@ -108,7 +108,12 @@ class _DeterministicReport:
                     {"Column": "a", "Score": 0.8},
                 ]
             )
-        return pd.DataFrame([{"Column 1": "b", "Column 2": "a", "Score": 0.4}])
+        return pd.DataFrame(
+            [
+                {"Column 1": "b", "Column 2": "a", "Score": 0.4},
+                {"Column 1": "id", "Column 2": "a", "Score": float("nan")},
+            ]
+        )
 
 
 def _pair(real: pd.DataFrame, synthetic: pd.DataFrame) -> ValidatedEvaluationPair:

@@ -136,6 +136,7 @@ def test_package_exports_only_the_contract_surface() -> None:
         "PrivacyEvidenceResult",
         "StatisticalQualityResult",
         "WeakArea",
+        "evaluate_candidate",
     }
 
 

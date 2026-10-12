@@ -61,10 +61,11 @@ def _property_score(properties: pd.DataFrame, property_name: str) -> float:
 
 
 def _column_scores(details: pd.DataFrame) -> tuple[ColumnQualityScore, ...]:
-    scores = [
-        ColumnQualityScore(column_name=str(row["Column"]), score=_unit_score(row["Score"]))
-        for row in _records(details)
-    ]
+    scores = []
+    for row in _records(details):
+        score = _optional_unit_score(row["Score"])
+        if score is not None:
+            scores.append(ColumnQualityScore(column_name=str(row["Column"]), score=score))
     return tuple(sorted(scores, key=lambda item: item.column_name))
 
 
@@ -72,17 +73,21 @@ def _weak_areas(
     shape_details: pd.DataFrame,
     pair_details: pd.DataFrame,
 ) -> tuple[WeakArea, ...]:
-    areas = [
-        WeakArea(kind="column_shape", name=str(row["Column"]), score=_unit_score(row["Score"]))
-        for row in _records(shape_details)
-    ]
+    areas = []
+    for row in _records(shape_details):
+        score = _optional_unit_score(row["Score"])
+        if score is not None:
+            areas.append(WeakArea(kind="column_shape", name=str(row["Column"]), score=score))
     for row in _records(pair_details):
+        score = _optional_unit_score(row["Score"])
+        if score is None:
+            continue
         first, second = sorted((str(row["Column 1"]), str(row["Column 2"])))
         areas.append(
             WeakArea(
                 kind="column_pair_trend",
                 name=f"{first} | {second}",
-                score=_unit_score(row["Score"]),
+                score=score,
             )
         )
     areas.sort(key=lambda item: (item.score, item.kind, item.name))
@@ -98,6 +103,15 @@ def _records(frame: pd.DataFrame) -> list[dict[str, Any]]:
 
 def _unit_score(value: object) -> float:
     score = float(value)  # type: ignore[arg-type]
+    if not math.isfinite(score) or not 0.0 <= score <= 1.0:
+        raise ValueError("metric score is outside the unit interval")
+    return score
+
+
+def _optional_unit_score(value: object) -> float | None:
+    score = float(value)  # type: ignore[arg-type]
+    if math.isnan(score):
+        return None
     if not math.isfinite(score) or not 0.0 <= score <= 1.0:
         raise ValueError("metric score is outside the unit interval")
     return score
