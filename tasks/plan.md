@@ -235,3 +235,13 @@ None blocking. Threshold decisions, regression, and formal privacy mechanisms re
 - Required-versus-optional utility tests.
 - Input-permutation and tie-break tests.
 - Full project tests, Ruff, formatting, mypy, and 95% module coverage.
+
+---
+
+# Implementation Plan: SynthGuard `studio-ui`
+
+1. Add a pure Markdown report builder and test its evidence/limitation sections.
+2. Build the Streamlit shell, local upload materialization, profile review, and configuration controls.
+3. Connect generation, evaluation, and quality-gate public APIs through session state.
+4. Render comparison and criterion evidence plus candidate/report downloads.
+5. Verify with Streamlit testing, full quality gates, and a real browser at desktop and mobile sizes.

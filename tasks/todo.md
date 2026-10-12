@@ -454,3 +454,16 @@
 - [x] Quality-gate reaches at least 95% statement coverage.
 - [x] Full tests and static quality gates pass offline.
 - [x] README documents configurable decisions and their limitations.
+
+---
+
+# SynthGuard `studio-ui` Task List
+
+- [ ] Upload and profile one bounded CSV without rendering source rows.
+- [ ] Configure methods, rows, seed, target, and all gate thresholds.
+- [ ] Generate, evaluate, and rank candidates through public domain APIs only.
+- [ ] Render comparison, criterion, weak-area, privacy, and utility evidence.
+- [ ] Download the winning CSV and a Markdown evidence report.
+- [ ] Cover report generation and initial app rendering with automated tests.
+- [ ] Verify desktop/mobile browser states, accessibility structure, and clean console.
+- [ ] Full tests, Ruff, formatting, and mypy pass.
