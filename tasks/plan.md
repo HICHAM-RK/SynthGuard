@@ -209,3 +209,29 @@ Pair and metadata validation
 ## Open Questions
 
 None blocking. Threshold decisions, regression, and formal privacy mechanisms remain deferred by specification.
+
+---
+
+# Implementation Plan: SynthGuard `quality-gate`
+
+## Delivery Slices
+
+1. Define immutable policy, candidate, criterion, decision, result, and error contracts.
+2. Implement inclusive criteria with explicit optional/required utility behavior.
+3. Add fixed transparent composite scoring, deterministic ranking, and winner selection.
+4. Verify permutation stability, JSON serialization, value-safe errors, coverage, and docs.
+
+## Architecture Decisions
+
+- The module consumes `EvaluationResult` and never imports evaluator internals.
+- Threshold checks and ranking are pure functions with no time, random, network, or filesystem input.
+- Near-duplicate rate uses the sampled synthetic row count recorded by evaluation-core.
+- A failed candidate still receives a score and rank for diagnosis, but can never become the winner.
+- UI and MCP consumers receive the same criterion explanations without recreating policy logic.
+
+## Verification
+
+- Boundary tests for every comparator.
+- Required-versus-optional utility tests.
+- Input-permutation and tie-break tests.
+- Full project tests, Ruff, formatting, mypy, and 95% module coverage.

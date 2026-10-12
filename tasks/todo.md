@@ -425,3 +425,32 @@
 - [x] Every specification success criterion has direct verification evidence.
 - [x] Full project tests and static quality gates pass offline.
 - [x] The next module, `quality-gate`, may begin specification review.
+
+---
+
+# SynthGuard `quality-gate` Task List
+
+## Gate Task 1: Contracts
+
+- [ ] Immutable policy and result contracts validate bounds and non-empty candidates.
+- [ ] Package exports only the intended public surface.
+- [ ] Stable `QualityGateError` payloads are value-safe.
+
+## Gate Task 2: Decisions
+
+- [ ] All five criteria use documented inclusive comparisons.
+- [ ] Optional utility is skipped explicitly; required utility fails explicitly.
+- [ ] Every criterion exposes observed value, threshold, comparator, and explanation.
+
+## Gate Task 3: Ranking
+
+- [ ] Composite score follows documented fixed weights.
+- [ ] Passed candidates rank before failed candidates.
+- [ ] Repeated runs and candidate permutations produce identical order and winner.
+
+## Gate Task 4: Hardening
+
+- [ ] JSON serialization, duplicate ids, and no-winner behavior are tested.
+- [ ] Quality-gate reaches at least 95% statement coverage.
+- [ ] Full tests and static quality gates pass offline.
+- [ ] README documents configurable decisions and their limitations.
