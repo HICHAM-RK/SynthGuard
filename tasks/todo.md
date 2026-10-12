@@ -64,14 +64,14 @@
 
 **Acceptance criteria:**
 
-- [ ] Repeated profiling of the same fixture produces the same ordered contract.
-- [ ] Nulls, booleans, dates, categories, numerical fields, and high-cardinality identifiers are represented correctly in fixtures.
-- [ ] Sensitive-column flags are explicitly advisory and include a reason.
+- [x] Repeated profiling of the same fixture produces the same ordered contract.
+- [x] Nulls, booleans, dates, categories, numerical fields, and high-cardinality identifiers are represented correctly in fixtures.
+- [x] Sensitive-column flags are explicitly advisory and include a reason.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/data_core/test_profiling.py -q`
-- [ ] Serialize a complete profile with Pydantic JSON output.
+- [x] `uv run pytest tests/data_core/test_profiling.py -q` — 5 passed.
+- [x] A complete profile serializes through Pydantic JSON output.
 
 **Dependencies:** Task 2
 

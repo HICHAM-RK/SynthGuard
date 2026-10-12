@@ -1,0 +1,5 @@
+customer_id,age,income,is_member,joined_at,segment,email
+CUST-101,29,52000.0,true,2024-01-15,standard,ada@example.test
+CUST-102,41,78000.5,false,2023-07-02,premium,grace@example.test
+CUST-103,35,,true,2024-03-22,standard,linus@example.test
+CUST-104,52,91000.0,false,2022-11-08,premium,margaret@example.test

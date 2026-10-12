@@ -13,6 +13,7 @@ from .contracts import (
     ProfileRequest,
     SemanticType,
 )
+from .profiling import profile_csv
 
 __all__ = [
     "ArtifactPaths",
@@ -26,4 +27,5 @@ __all__ = [
     "PhysicalType",
     "ProfileRequest",
     "SemanticType",
+    "profile_csv",
 ]

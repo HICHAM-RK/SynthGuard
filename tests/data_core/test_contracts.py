@@ -74,4 +74,5 @@ def test_package_exports_only_the_contract_surface() -> None:
         "PhysicalType",
         "ProfileRequest",
         "SemanticType",
+        "profile_csv",
     }
