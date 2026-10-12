@@ -90,14 +90,14 @@
 
 **Acceptance criteria:**
 
-- [ ] Every input column appears exactly once in generated metadata.
-- [ ] Valid overrides update known columns without mutating the original profile.
-- [ ] Unknown columns and unsupported overrides fail with `INVALID_OVERRIDE`.
+- [x] Every input column appears exactly once in generated metadata.
+- [x] Valid overrides update known columns without mutating the original profile.
+- [x] Unknown columns and unsupported overrides fail with `INVALID_OVERRIDE`.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/data_core/test_metadata.py -q`
-- [ ] Validate generated metadata through the locked SDV API.
+- [x] `uv run pytest tests/data_core/test_metadata.py -q` — 5 passed.
+- [x] Generated metadata validates through the locked SDV API.
 
 **Dependencies:** Task 3
 
@@ -111,9 +111,9 @@
 
 ## Checkpoint: Reviewable metadata
 
-- [ ] Tasks 3-4 acceptance criteria are checked with evidence.
-- [ ] A caller can profile, review, and override a fixture before training.
-- [ ] All quality commands pass.
+- [x] Tasks 3-4 acceptance criteria are checked with evidence.
+- [x] A caller can profile, review, and override a fixture before training.
+- [x] All quality commands pass.
 
 ## Task 5: Generate a Gaussian-copula candidate
 
