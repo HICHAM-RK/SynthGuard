@@ -33,14 +33,14 @@
 
 **Acceptance criteria:**
 
-- [ ] Valid UTF-8 and UTF-8 BOM fixtures load with column order preserved.
-- [ ] Missing, empty, oversized, malformed, unsupported-encoding, and over-row-limit sources return stable error codes.
-- [ ] Errors and logs contain no source rows or complete cell values.
+- [x] Valid UTF-8 and UTF-8 BOM fixtures load with column order preserved.
+- [x] Missing, empty, oversized, malformed, unsupported-encoding, and over-row-limit sources return stable error codes.
+- [x] Errors and logs contain no source rows or complete cell values.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/data_core/test_ingestion.py -q`
-- [ ] Manual checksum comparison confirms the source fixture remains unchanged.
+- [x] `uv run pytest tests/data_core/test_ingestion.py -q` — 11 passed.
+- [x] Automated before/after SHA-256 comparison confirms the source fixture remains unchanged.
 
 **Dependencies:** Task 1
 
@@ -54,9 +54,9 @@
 
 ## Checkpoint: Contract and ingestion
 
-- [ ] Tasks 1-2 acceptance criteria are checked with evidence.
-- [ ] Focused tests, Ruff, and mypy pass.
-- [ ] Public errors are structured and do not leak fixture values.
+- [x] Tasks 1-2 acceptance criteria are checked with evidence.
+- [x] Focused tests, Ruff, and mypy pass.
+- [x] Public errors are structured and do not leak fixture values.
 
 ## Task 3: Produce deterministic dataset profiles
 

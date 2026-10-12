@@ -1,0 +1,4 @@
+customer_id,age,income,is_member,joined_at,segment
+CUST-001,29,52000.0,true,2024-01-15,standard
+CUST-002,41,78000.5,false,2023-07-02,premium
+CUST-003,35,64000.0,true,2024-03-22,standard
