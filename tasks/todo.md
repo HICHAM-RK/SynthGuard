@@ -228,3 +228,200 @@
 - [x] All module tests and quality gates pass offline.
 - [x] Source fixtures remain unchanged and contain no sensitive data.
 - [x] The next module, `evaluation-core`, may begin specification review.
+
+---
+
+# SynthGuard `evaluation-core` Task List
+
+## Evaluation Task 1: Establish evaluator contracts
+
+**Description:** Add the evaluation package, immutable request/result models, metric evidence contracts, structured warnings, and `EvaluationCoreError`.
+
+**Acceptance criteria:**
+
+- [ ] Requests reject empty paths and out-of-range privacy sampling limits.
+- [ ] Result score fields reject values outside `[0, 1]` while distances remain non-negative.
+- [ ] Only intended public names are exported from `synthguard.evaluation_core`.
+
+**Verification:**
+
+- [ ] `uv run pytest tests/evaluation_core/test_contracts.py -q`
+- [ ] `uv run ruff check . && uv run ruff format --check .`
+- [ ] `uv run mypy src/synthguard`
+
+**Dependencies:** Implemented `data-core`
+
+**Files likely touched:**
+
+- `src/synthguard/evaluation_core/__init__.py`
+- `src/synthguard/evaluation_core/contracts.py`
+- `tests/evaluation_core/test_contracts.py`
+
+**Estimated scope:** Medium
+
+## Evaluation Task 2: Validate artifact pairs
+
+**Description:** Load bounded real/synthetic CSVs and current metadata, verify exact ordered schema equality, calculate fingerprints, and validate optional targets.
+
+**Acceptance criteria:**
+
+- [ ] Valid artifacts produce one immutable internal pair without modifying inputs.
+- [ ] Missing, empty, malformed, mismatched, and invalid-metadata artifacts return stable errors.
+- [ ] Unknown or unusable classification targets fail before metric work starts.
+
+**Verification:**
+
+- [ ] `uv run pytest tests/evaluation_core/test_validation.py -q`
+- [ ] Automated checks confirm all source checksums remain unchanged.
+
+**Dependencies:** Evaluation Task 1
+
+**Files likely touched:**
+
+- `src/synthguard/evaluation_core/validation.py`
+- `src/synthguard/evaluation_core/contracts.py`
+- `tests/evaluation_core/test_validation.py`
+- `tests/evaluation_core/fixtures/real.csv`
+
+**Estimated scope:** Medium
+
+## Checkpoint: Trusted evaluation inputs
+
+- [ ] Evaluation Tasks 1-2 have evidence for every acceptance criterion.
+- [ ] Tests, Ruff, formatting, and mypy pass.
+- [ ] Errors contain no fixture values or unrestricted paths.
+
+## Evaluation Task 3: Measure statistical fidelity
+
+**Description:** Adapt the current SDMetrics quality report into overall, property, per-column, and deterministic weakest-area evidence.
+
+**Acceptance criteria:**
+
+- [ ] Scores are typed, bounded, and derived without deprecated imports or verbose output.
+- [ ] Controlled realistic data scores above deliberately collapsed data.
+- [ ] SDMetrics failures return `STATISTICAL_EVALUATION_FAILED` without internal details.
+
+**Verification:**
+
+- [ ] `uv run pytest tests/evaluation_core/test_statistical.py -q -W error`
+
+**Dependencies:** Evaluation Task 2
+
+**Files likely touched:**
+
+- `src/synthguard/evaluation_core/statistical.py`
+- `src/synthguard/evaluation_core/contracts.py`
+- `tests/evaluation_core/test_statistical.py`
+
+**Estimated scope:** Medium
+
+## Evaluation Task 4: Measure privacy-risk evidence
+
+**Description:** Calculate null-safe exact matches, deterministic mixed-type nearest-neighbor aggregates, near-duplicate counts, and SDMetrics DCR baseline protection.
+
+**Acceptance criteria:**
+
+- [ ] Exact copied rows, including normalized nulls, are counted correctly.
+- [ ] Identifier columns are excluded from bounded distance calculations and sampling is reproducible.
+- [ ] DCR and distance failures return `PRIVACY_EVALUATION_FAILED` without leaking rows.
+
+**Verification:**
+
+- [ ] `uv run pytest tests/evaluation_core/test_privacy.py -q -W error`
+
+**Dependencies:** Evaluation Task 2
+
+**Files likely touched:**
+
+- `src/synthguard/evaluation_core/privacy.py`
+- `src/synthguard/evaluation_core/contracts.py`
+- `tests/evaluation_core/test_privacy.py`
+
+**Estimated scope:** Medium
+
+## Checkpoint: Statistical and privacy evidence
+
+- [ ] Evaluation Tasks 3-4 pass independently and together.
+- [ ] Metrics expose methodology and bounded sampling details.
+- [ ] No pass/fail decision exists in evaluation-core.
+
+## Evaluation Task 5: Measure classification utility
+
+**Description:** Compare fixed real-trained and synthetic-trained logistic-regression pipelines on the same held-out real test set using weighted F1.
+
+**Acceptance criteria:**
+
+- [ ] Real data is split before preprocessing and the test labels are untouched during both fits.
+- [ ] Deterministic results expose scores, utility retention, class count, and split sizes.
+- [ ] Invalid targets and insufficient classes fail with stable value-safe errors.
+
+**Verification:**
+
+- [ ] `uv run pytest tests/evaluation_core/test_utility.py -q`
+
+**Dependencies:** Evaluation Task 2
+
+**Files likely touched:**
+
+- `src/synthguard/evaluation_core/utility.py`
+- `src/synthguard/evaluation_core/contracts.py`
+- `tests/evaluation_core/test_utility.py`
+
+**Estimated scope:** Medium
+
+## Evaluation Task 6: Orchestrate complete evaluations
+
+**Description:** Compose validation and metric adapters into the public `evaluate_candidate` service with deterministic timing-independent output.
+
+**Acceptance criteria:**
+
+- [ ] A valid request returns JSON-serializable statistical and privacy evidence.
+- [ ] Utility is present only when a target is requested.
+- [ ] Fingerprints, row counts, warnings, and elapsed time are returned without raw values.
+
+**Verification:**
+
+- [ ] `uv run pytest tests/evaluation_core/test_service.py -q`
+
+**Dependencies:** Evaluation Tasks 3-5
+
+**Files likely touched:**
+
+- `src/synthguard/evaluation_core/service.py`
+- `src/synthguard/evaluation_core/__init__.py`
+- `tests/evaluation_core/test_service.py`
+
+**Estimated scope:** Medium
+
+## Evaluation Task 7: Harden the evaluator end to end
+
+**Description:** Evaluate real data-core artifacts, deny network access, close coverage gaps, and document the public evaluation workflow and limitations.
+
+**Acceptance criteria:**
+
+- [ ] Gaussian and constrained CTGAN artifacts can be evaluated end to end.
+- [ ] Evaluation-core reaches at least 90% statement coverage with all project tests passing offline.
+- [ ] Documentation distinguishes risk evidence from privacy guarantees and evaluation from quality-gate decisions.
+
+**Verification:**
+
+- [ ] `uv run pytest --cov=synthguard.evaluation_core --cov-report=term-missing --cov-fail-under=90`
+- [ ] `uv run ruff check . && uv run ruff format --check .`
+- [ ] `uv run mypy src/synthguard`
+
+**Dependencies:** Evaluation Task 6
+
+**Files likely touched:**
+
+- `tests/evaluation_core/test_end_to_end.py`
+- `README.md`
+- `SPEC-evaluation-core.md`
+- `tasks/todo.md`
+
+**Estimated scope:** Medium
+
+## Checkpoint: `evaluation-core` complete
+
+- [ ] Every specification success criterion has direct verification evidence.
+- [ ] Full project tests and static quality gates pass offline.
+- [ ] The next module, `quality-gate`, may begin specification review.

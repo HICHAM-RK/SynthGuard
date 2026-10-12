@@ -120,3 +120,92 @@ Tasks 3 and 4 share contracts and should be sequential. Gaussian and CTGAN adapt
 ## Open Questions
 
 None blocking. Changes to the approved synthesis methods, limits, or public contract require a spec update before implementation.
+
+---
+
+# Implementation Plan: SynthGuard `evaluation-core`
+
+## Overview
+
+Implement a typed, offline evaluator that validates a real/synthetic artifact pair and produces independent statistical, privacy-risk, and optional classification-utility evidence. The module returns measurements only; threshold decisions remain owned by `quality-gate`.
+
+## Dependency Graph
+
+```text
+Evaluation contracts
+        ↓
+Pair and metadata validation
+        ├── Statistical quality adapter
+        ├── Privacy evidence adapter
+        └── Classification utility adapter
+                    ↓
+          Evaluation orchestration
+                    ↓
+       End-to-end verification and docs
+```
+
+## Delivery Slices
+
+### Phase 1: Validated evaluation pair
+
+- Evaluation Task 1 defines immutable contracts, stable errors, and package exports.
+- Evaluation Task 2 loads bounded artifacts, validates current SDV metadata, checks exact schema order, and fingerprints inputs.
+
+### Checkpoint: Trusted inputs
+
+- Valid pairs produce one internal typed representation.
+- Missing, malformed, empty, mismatched, and invalid-metadata inputs fail without leaking source values.
+
+### Phase 2: Independent evidence
+
+- Evaluation Task 3 converts the current SDMetrics quality report into deterministic typed evidence.
+- Evaluation Task 4 calculates exact copies, bounded mixed-type nearest-neighbor evidence, and DCR baseline protection.
+- Evaluation Task 5 runs the optional leakage-safe weighted-F1 classification experiment.
+
+### Checkpoint: Three evidence dimensions
+
+- Each evaluator is independently testable and returns evidence without threshold decisions.
+- Sampling and model splits are deterministic from the request seed.
+
+### Phase 3: Product-ready module
+
+- Evaluation Task 6 orchestrates the complete result and handles partial optional utility cleanly.
+- Evaluation Task 7 evaluates actual data-core artifacts, closes coverage gaps, and documents the public API.
+
+### Checkpoint: Module complete
+
+- Every `SPEC-evaluation-core.md` success criterion has direct evidence.
+- Full offline quality gates pass with at least 90% evaluation-module coverage.
+
+## Architecture Decisions
+
+- Pydantic contracts form the stable consumer interface; pandas and estimator objects remain internal.
+- Validation loads each file once and passes trusted frames to pure metric adapters.
+- Current `sdmetrics.reports.QualityReport` and `Metadata` APIs are isolated behind adapters.
+- Potentially quadratic privacy work uses deterministic bounded sampling.
+- Identifier columns are excluded from proximity calculations but remain part of exact-row matching.
+- ML utility uses one fixed logistic-regression methodology so comparisons remain interpretable and reproducible.
+- Individual evaluator failures are explicit operational errors; the service never invents replacement scores.
+
+## Risks and Mitigations
+
+| Risk | Impact | Mitigation |
+|---|---|---|
+| Mixed-type distance is misleading | High | Document encoding/scaling, exclude IDs, expose threshold and raw aggregate distances |
+| DCR becomes expensive | High | Seeded row bounds and subsampling metadata |
+| Utility test leaks holdout data | High | Split first; fit each preprocessing/model pipeline only on its training source |
+| Small classes make stratification impossible | Medium | Validate class counts and fail with `INSUFFICIENT_CLASSES` |
+| SDMetrics output schemas change | High | Lock dependencies, adapter tests, and typed conversion |
+| Metrics expose sensitive values | High | Return names and aggregate scores only; regression tests scan errors/results |
+
+## Verification Strategy
+
+- Controlled fixtures establish ordering: realistic data should outperform collapsed data.
+- Exact-copy fixtures prove privacy signals independently from SDMetrics.
+- Utility tests compare two pipelines on one untouched real holdout.
+- An end-to-end test generates a data-core run and evaluates its artifacts with network access denied.
+- Complete gates: module coverage, full project tests, Ruff, formatting, and mypy.
+
+## Open Questions
+
+None blocking. Threshold decisions, regression, and formal privacy mechanisms remain deferred by specification.

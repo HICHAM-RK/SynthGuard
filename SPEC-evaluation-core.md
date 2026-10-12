@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft for human review. This specification defines the second module in `CAPABILITY_MAP.md` and depends on the implemented `data-core` contract.
+Approved for implementation. This specification defines the second module in `CAPABILITY_MAP.md` and depends on the implemented `data-core` contract.
 
 ## Assumptions
 
