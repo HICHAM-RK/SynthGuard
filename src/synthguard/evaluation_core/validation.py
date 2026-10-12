@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import math
 from dataclasses import dataclass
 from io import StringIO
 from pathlib import Path
@@ -228,9 +229,22 @@ def _validate_target(
             {"target_name": target, "sdtype": str(sdtype)},
         )
     for dataset_name, frame in (("real", real), ("synthetic", synthetic)):
-        if frame[target].nunique(dropna=True) < 2:
+        target_values = frame[target]
+        class_counts = target_values.value_counts(dropna=True)
+        has_enough_classes = len(class_counts) >= 2
+        can_stratify = True
+        if dataset_name == "real":
+            test_rows = math.ceil(len(target_values) * 0.2)
+            train_rows = len(target_values) - test_rows
+            can_stratify = (
+                not class_counts.empty
+                and int(class_counts.min()) >= 2
+                and test_rows >= len(class_counts)
+                and train_rows >= len(class_counts)
+            )
+        if target_values.isna().any() or not has_enough_classes or not can_stratify:
             raise EvaluationCoreError(
                 "INSUFFICIENT_CLASSES",
-                "The classification target needs at least two classes.",
+                "The classification target cannot support the fixed stratified experiment.",
                 {"target_name": target, "dataset": dataset_name},
             )

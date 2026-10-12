@@ -89,7 +89,7 @@ class ClassificationUtilityResult(ContractModel):
     metric_name: Literal["weighted_f1"]
     real_train_score: float = Field(ge=0.0, le=1.0)
     synthetic_train_score: float = Field(ge=0.0, le=1.0)
-    utility_retention: float = Field(ge=0.0)
+    utility_retention: float | None = Field(default=None, ge=0.0)
     model_parameters: dict[str, str | int | float | bool] = Field(default_factory=dict)
 
 

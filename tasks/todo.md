@@ -351,13 +351,13 @@
 
 **Acceptance criteria:**
 
-- [ ] Real data is split before preprocessing and the test labels are untouched during both fits.
-- [ ] Deterministic results expose scores, utility retention, class count, and split sizes.
-- [ ] Invalid targets and insufficient classes fail with stable value-safe errors.
+- [x] Real data is split before preprocessing and the test labels are untouched during both fits.
+- [x] Deterministic results expose scores, utility retention, class count, and split sizes.
+- [x] Invalid targets and insufficient classes fail with stable value-safe errors.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/evaluation_core/test_utility.py -q`
+- [x] `uv run pytest tests/evaluation_core/test_utility.py -q`
 
 **Dependencies:** Evaluation Task 2
 

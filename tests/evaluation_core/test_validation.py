@@ -152,6 +152,20 @@ def test_target_with_one_real_class_is_rejected(tmp_path: Path) -> None:
     assert caught.value.details == {"target_name": "segment", "dataset": "real"}
 
 
+def test_target_with_too_few_rows_per_real_class_is_rejected(tmp_path: Path) -> None:
+    request = _write_artifacts(tmp_path, classification_target="segment")
+    request.real_csv.write_text(
+        "customer_id,age,segment\nR-1,20,basic\nR-2,30,basic\nR-3,40,basic\nR-4,50,premium\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(EvaluationCoreError) as caught:
+        load_evaluation_pair(request)
+
+    assert caught.value.code == "INSUFFICIENT_CLASSES"
+    assert caught.value.details == {"target_name": "segment", "dataset": "real"}
+
+
 def _write_artifacts(
     tmp_path: Path,
     *,
@@ -162,7 +176,10 @@ def _write_artifacts(
     synthetic_csv = tmp_path / "synthetic.csv"
     metadata_json = tmp_path / "metadata.json"
     real_csv.write_text(
-        "customer_id,age,segment\nR-1,20,basic\nR-2,30,premium\nR-3,40,basic\nR-4,50,premium\n",
+        "customer_id,age,segment\n"
+        "R-1,20,basic\nR-2,30,premium\nR-3,40,basic\nR-4,50,premium\n"
+        "R-5,25,basic\nR-6,35,premium\nR-7,45,basic\nR-8,55,premium\n"
+        "R-9,60,basic\nR-10,65,premium\n",
         encoding="utf-8",
     )
     synthetic_csv.write_text(
