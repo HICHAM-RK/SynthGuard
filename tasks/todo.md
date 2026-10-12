@@ -123,7 +123,7 @@
 
 - [x] The Gaussian adapter trains from reviewed metadata and produces exactly the requested rows.
 - [x] Unsupported methods and training failures preserve stable public errors.
-- [ ] Method-specific objects do not leak through the public result contract.
+- [x] Method-specific objects do not leak through the public result contract.
 
 **Verification:**
 
@@ -166,9 +166,9 @@
 
 ## Checkpoint: Two generation methods
 
-- [ ] Tasks 5-6 acceptance criteria are checked with evidence.
-- [ ] Both adapters satisfy the same contract and run offline.
-- [ ] All quality commands pass.
+- [x] Tasks 5-6 acceptance criteria are checked with evidence.
+- [x] Both adapters satisfy the same contract and run offline.
+- [x] All quality commands pass.
 
 ## Task 7: Persist atomic run artifacts
 
@@ -176,14 +176,14 @@
 
 **Acceptance criteria:**
 
-- [ ] Successful runs finalize all three required artifacts beneath the validated output root.
-- [ ] Existing completed runs are never overwritten.
-- [ ] Simulated write failures leave no directory that appears complete.
+- [x] Successful runs finalize all three required artifacts beneath the validated output root.
+- [x] Existing completed runs are never overwritten.
+- [x] Simulated write failures leave no directory that appears complete.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/data_core/test_artifacts.py -q`
-- [ ] Inspect one manifest and verify artifact checksums.
+- [x] `uv run pytest tests/data_core/test_artifacts.py -q` — 5 passed.
+- [x] Automated manifest checks verify synthetic CSV and metadata checksums.
 
 **Dependencies:** Tasks 5-6
 

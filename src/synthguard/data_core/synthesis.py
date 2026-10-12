@@ -15,6 +15,7 @@ from .contracts import (
     DatasetWarning,
     GenerationMethod,
     GenerationRequest,
+    GenerationResult,
     ProfileRequest,
 )
 from .ingestion import read_validated_csv
@@ -57,6 +58,20 @@ class _Synthesizer(Protocol):
     def fit(self, data: pd.DataFrame) -> None: ...
 
     def sample(self, num_rows: int) -> pd.DataFrame: ...
+
+
+def generate_candidate(
+    request: GenerationRequest,
+    *,
+    options: SynthesisOptions | None = None,
+) -> GenerationResult:
+    """Generate and atomically persist one synthetic candidate."""
+
+    from .artifacts import persist_candidate
+
+    candidate = synthesize_candidate_data(request, options=options)
+    result: GenerationResult = persist_candidate(candidate, request.output_directory)
+    return result
 
 
 def synthesize_candidate_data(

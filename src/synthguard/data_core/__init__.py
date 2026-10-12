@@ -14,6 +14,7 @@ from .contracts import (
     SemanticType,
 )
 from .profiling import profile_csv
+from .synthesis import generate_candidate
 
 __all__ = [
     "ArtifactPaths",
@@ -27,5 +28,6 @@ __all__ = [
     "PhysicalType",
     "ProfileRequest",
     "SemanticType",
+    "generate_candidate",
     "profile_csv",
 ]
