@@ -297,13 +297,13 @@
 
 **Acceptance criteria:**
 
-- [ ] Scores are typed, bounded, and derived without deprecated imports or verbose output.
-- [ ] Controlled realistic data scores above deliberately collapsed data.
-- [ ] SDMetrics failures return `STATISTICAL_EVALUATION_FAILED` without internal details.
+- [x] Scores are typed, bounded, and derived without deprecated imports or verbose output.
+- [x] Controlled realistic data scores above deliberately collapsed data.
+- [x] SDMetrics failures return `STATISTICAL_EVALUATION_FAILED` without internal details.
 
 **Verification:**
 
-- [ ] `uv run pytest tests/evaluation_core/test_statistical.py -q -W error`
+- [x] `uv run pytest tests/evaluation_core/test_statistical.py -q -W error`
 
 **Dependencies:** Evaluation Task 2
 
