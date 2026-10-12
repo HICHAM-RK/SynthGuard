@@ -201,15 +201,15 @@
 
 **Acceptance criteria:**
 
-- [ ] Every success criterion in `SPEC-data-core.md` has direct test evidence.
-- [ ] `src/synthguard/data_core` reaches at least 90% statement coverage.
-- [ ] The complete module works offline and never writes outside its validated root.
+- [x] Every success criterion in `SPEC-data-core.md` has direct test evidence.
+- [x] `src/synthguard/data_core` reaches at least 90% statement coverage.
+- [x] The complete module works offline and never writes outside its validated root.
 
 **Verification:**
 
-- [ ] `uv run pytest --cov=synthguard.data_core --cov-report=term-missing --cov-fail-under=90`
-- [ ] `uv run ruff check . && uv run ruff format --check .`
-- [ ] `uv run mypy src/synthguard`
+- [x] `uv run pytest --cov=synthguard.data_core --cov-report=term-missing --cov-fail-under=90` — 41 passed, 93% coverage.
+- [x] `uv run ruff check . && uv run ruff format --check .` — passed.
+- [x] `uv run mypy src/synthguard` — passed with no issues.
 
 **Dependencies:** Task 7
 
@@ -224,7 +224,7 @@
 
 ## Checkpoint: `data-core` complete
 
-- [ ] All tasks and checkpoints are complete with verification evidence.
-- [ ] All module tests and quality gates pass offline.
-- [ ] Source fixtures remain unchanged and contain no sensitive data.
-- [ ] The next module, `evaluation-core`, may begin specification review.
+- [x] All tasks and checkpoints are complete with verification evidence.
+- [x] All module tests and quality gates pass offline.
+- [x] Source fixtures remain unchanged and contain no sensitive data.
+- [x] The next module, `evaluation-core`, may begin specification review.

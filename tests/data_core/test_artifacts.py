@@ -15,7 +15,7 @@ from synthguard.data_core import (
     GenerationRequest,
     generate_candidate,
 )
-from synthguard.data_core.artifacts import persist_candidate
+from synthguard.data_core.artifacts import _assert_contained, persist_candidate
 from synthguard.data_core.synthesis import synthesize_candidate_data
 
 FIXTURE = Path(__file__).parent / "fixtures" / "mixed_types.csv"
@@ -103,3 +103,13 @@ def test_public_generate_candidate_returns_complete_result(tmp_path: Path) -> No
 
 def test_package_exports_public_generation_function() -> None:
     assert "generate_candidate" in data_core.__all__
+
+
+def test_artifact_containment_guard_rejects_outside_path(tmp_path: Path) -> None:
+    root = tmp_path / "allowed"
+    outside = tmp_path / "outside" / "run"
+
+    with pytest.raises(DataCoreError) as caught:
+        _assert_contained(root.resolve(), outside.resolve())
+
+    assert caught.value.code == "ARTIFACT_WRITE_FAILED"

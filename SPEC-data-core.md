@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved for implementation. This specification is the contract for the first module in `CAPABILITY_MAP.md`.
+Implemented and verified. This specification is the contract for the first module in `CAPABILITY_MAP.md`.
 
 ## Assumptions
 
@@ -165,7 +165,7 @@ Each column profile contains:
 
 ### Error contract
 
-Every expected failure raises `DataCoreError` with:
+Pydantic rejects malformed request objects at the public boundary with `ValidationError`. Once a request is valid, every expected operational failure raises `DataCoreError` with:
 
 ```python
 class DataCoreError(Exception):
@@ -292,7 +292,7 @@ def profile_csv(request: ProfileRequest) -> DatasetProfile:
 - Users can review and override inferred semantic types before generation.
 - Both Gaussian-copula and CTGAN candidates can be generated locally on CPU with an exact requested row count.
 - Every successful run creates a synthetic CSV, metadata JSON, and reproducibility manifest in an isolated run directory.
-- Invalid files, invalid overrides, unsupported methods, training failures, and unsafe paths produce stable structured errors.
+- Invalid request fields produce structured Pydantic validation errors; invalid files, invalid overrides, training failures, collisions, and unsafe artifact paths produce stable `DataCoreError` codes.
 - Focused tests pass offline with at least 90% statement coverage.
 - Source datasets remain unchanged and raw values do not appear in logs or public errors.
 
