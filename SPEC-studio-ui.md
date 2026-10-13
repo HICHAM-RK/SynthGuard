@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved for implementation. This module provides a local Streamlit interface over the three implemented domain modules.
+Implemented and verified. This module provides a local Streamlit interface over the three implemented domain modules.
 
 ## User Experience
 

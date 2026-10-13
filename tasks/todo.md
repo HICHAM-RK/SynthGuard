@@ -459,11 +459,11 @@
 
 # SynthGuard `studio-ui` Task List
 
-- [ ] Upload and profile one bounded CSV without rendering source rows.
-- [ ] Configure methods, rows, seed, target, and all gate thresholds.
-- [ ] Generate, evaluate, and rank candidates through public domain APIs only.
-- [ ] Render comparison, criterion, weak-area, privacy, and utility evidence.
-- [ ] Download the winning CSV and a Markdown evidence report.
-- [ ] Cover report generation and initial app rendering with automated tests.
-- [ ] Verify desktop/mobile browser states, accessibility structure, and clean console.
-- [ ] Full tests, Ruff, formatting, and mypy pass.
+- [x] Upload and profile one bounded CSV without rendering source rows.
+- [x] Configure methods, rows, seed, target, and all gate thresholds.
+- [x] Generate, evaluate, and rank candidates through public domain APIs only.
+- [x] Render comparison, criterion, weak-area, privacy, and utility evidence.
+- [x] Download the winning CSV and a Markdown evidence report.
+- [x] Cover report generation and initial app rendering with automated tests.
+- [x] Verify desktop/mobile browser states, accessibility structure, and clean console.
+- [x] Full tests, Ruff, formatting, and mypy pass.
