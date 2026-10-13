@@ -98,7 +98,7 @@ Requirements: Python 3.12 and [`uv`](https://docs.astral.sh/uv/).
 Clone the repository and enter the project:
 
 ```bash
-git clone <your-private-repository-url>
+git clone https://github.com/HICHAM-RK/SynthGuard.git
 cd SynthGuard
 ```
 
