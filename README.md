@@ -4,7 +4,18 @@
 
 SynthGuard is a local-first quality gate for tabular synthetic data. It generates competing datasets, measures whether they preserve useful patterns, checks whether they copy source records too closely, and returns a deterministic pass/fail decision with the evidence behind it.
 
-It runs on your machine, requires no API key, and exposes the same workflow through a Streamlit studio and five MCP tools.
+It runs on your machine, requires no API key, and exposes the same workflow through a Streamlit studio for people and a FastMCP server for AI agents.
+
+> **Agent-ready through MCP:** Codex, Claude, and other MCP clients can profile datasets, generate candidates, evaluate quality and privacy risk, apply release policies, and run the complete workflow through five typed tools.
+
+## Two ways to use SynthGuard
+
+| Interface | Designed for | Experience |
+|---|---|---|
+| Streamlit studio | People exploring and comparing datasets | Upload a CSV, configure a run, inspect visual evidence, and download a passing candidate |
+| MCP server | AI agents and automated workflows | Call typed tools over local `stdio` while SynthGuard enforces the same validation, evaluation, and quality gate |
+
+Both interfaces delegate to the same domain code. The MCP server is not a second implementation and cannot bypass the quality policy.
 
 ## The problem it solves
 
@@ -152,7 +163,48 @@ runs/<run-id>/
 └── manifest.json
 ```
 
-## MCP setup
+## MCP server for AI agents
+
+The MCP server turns the complete SynthGuard workflow into tools that an AI assistant can discover and call. This makes requests such as the following possible:
+
+> Profile this CSV, generate 1,000 rows with Gaussian Copula, evaluate the candidate, and explain every failed release criterion.
+
+The AI assistant coordinates the work; SynthGuard still performs the local processing and returns the deterministic evidence.
+
+### Available tools
+
+| Tool | Purpose |
+|---|---|
+| `profile_dataset` | Inspect one allowed CSV and return a safe, reviewable schema profile |
+| `generate_synthetic_data` | Generate one Gaussian Copula or CTGAN artifact run |
+| `evaluate_synthetic_data` | Measure statistical fidelity, exact/near-copy risk, DCR, and optional ML utility |
+| `gate_candidates` | Apply explicit thresholds and deterministically rank supplied evidence |
+| `run_synthguard_workflow` | Generate, evaluate, gate, and report one or more methods in a single call |
+
+### Register it in Codex
+
+After cloning and installing the project, register the local `stdio` server. Replace the example paths with absolute paths on your machine:
+
+```bash
+codex mcp add synthguard \
+  --env "SYNTHGUARD_ALLOWED_ROOTS=/absolute/path/to/data:/absolute/path/to/output" \
+  -- uv run --project /absolute/path/to/SynthGuard synthguard-mcp
+```
+
+Verify the registration:
+
+```bash
+codex mcp get synthguard
+codex mcp list
+```
+
+Start a new Codex session so it can discover the newly registered tools, then try:
+
+```text
+Use SynthGuard's profile_dataset tool to analyze /absolute/path/to/data/example.csv.
+```
+
+### Run it with another MCP client
 
 Allow only the source/output roots the server needs, then start its stdio transport:
 
@@ -178,15 +230,13 @@ Example client configuration:
 
 Use `;` instead of `:` between allowed roots on Windows. If the variable is omitted, only the server process's current working directory is allowed.
 
-The five tools are:
+The server returns aggregate evidence and validated artifact paths, never source rows. Paths outside the allowlist—including symlink escapes—are rejected before domain work starts. See [SPEC-mcp-server.md](SPEC-mcp-server.md) for the exact contract and security boundary.
 
-- `profile_dataset`
-- `generate_synthetic_data`
-- `evaluate_synthetic_data`
-- `gate_candidates`
-- `run_synthguard_workflow`
+Test the MCP implementation directly:
 
-They return aggregate evidence and artifact paths, never source rows. See [SPEC-mcp-server.md](SPEC-mcp-server.md) for the exact boundary.
+```bash
+uv run pytest tests/mcp_server -v
+```
 
 ## Evidence and decisions
 
