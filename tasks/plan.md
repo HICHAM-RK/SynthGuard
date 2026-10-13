@@ -254,3 +254,42 @@ None blocking. Threshold decisions, regression, and formal privacy mechanisms re
 2. Add typed MCP input contracts and a framework-independent tool adapter over public APIs.
 3. Register the exact five-tool FastMCP stdio surface and normalize domain failures as tool errors.
 4. Add an installable entry point, client configuration docs, discovery tests, and end-to-end offline verification.
+
+---
+
+# Implementation Plan: SynthGuard `release-quality`
+
+## Delivery Slices
+
+1. Lock the release contract and add executable tests for required public assets and import safety.
+2. Add the non-sensitive demo dataset, architecture, threat model, contribution guide, changelog, and license.
+3. Rewrite the README around the problem, differentiators, evidence workflow, and fast demo path.
+4. Add GitHub Actions, Dependabot, package metadata, clean-wheel verification, and dependency auditing.
+5. Run the demo, full gates, build/install smoke test, secret scan, mutation test, and five-axis review.
+
+## Architecture Decisions
+
+- Release checks remain outside domain modules and do not alter metric or quality-gate behavior.
+- One sequential CI job favors clear failure ordering and avoids repeating the large SDV dependency install.
+- CI installs from the committed lockfile and tests the wheel separately from the editable workspace.
+- Public documentation treats privacy metrics as evidence and keeps formal guarantees explicitly out of scope.
+- Importing helper submodules must not instantiate the MCP server; only the server entry module owns that runtime object.
+
+## Verification
+
+- Focused release-asset tests and a fast end-to-end demo.
+- Full project coverage floor of 85%, Ruff, format, and strict mypy.
+- Dependency audit against the locked environment and tracked-file credential scan.
+- Wheel/sdist build plus isolated wheel installation and MCP tool discovery.
+- Manual five-axis review and a reversible mutation test.
+
+## Risks and Mitigations
+
+| Risk | Impact | Mitigation |
+|---|---|---|
+| CI differs from local development | High | Pin Python 3.12, use `uv.lock`, and run identical commands |
+| Portfolio claims overstate privacy | High | Link threat model and repeat explicit non-guarantees |
+| Demo accidentally contains real data | High | Commit a generated fixture with fictional values and test its shape |
+| Wheel works only from the repository | High | Install the built wheel into a clean temporary environment |
+| Dependency advisories are ignored | High | Audit in CI and document any future deferral with reachability evidence |
+

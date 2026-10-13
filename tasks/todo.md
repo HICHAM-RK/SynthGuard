@@ -479,3 +479,35 @@
 - [x] FastMCP discovery returns exactly the documented tool names.
 - [x] README includes a ready-to-use stdio configuration and allowlist instructions.
 - [x] MCP tests and all repository quality gates pass offline.
+
+---
+
+# SynthGuard `release-quality` Task List
+
+## Release Task 1: Lock contracts and executable expectations
+
+- [x] `SPEC-release-quality.md` defines release assets, CI gates, security evidence, packaging verification, and boundaries.
+- [ ] Failing tests describe required public assets, demo-data shape, package metadata, documentation links, and MCP import safety.
+
+## Release Task 2: Add portfolio and security assets
+
+- [ ] A fictional, non-sensitive demo CSV supports the fast local workflow.
+- [ ] Architecture and threat-model documents explain boundaries, evidence flow, controls, and residual risks.
+- [ ] License, contribution guide, security policy, and changelog are complete and linked.
+- [ ] README clearly explains the problem, differentiation, complete feature set, demo, architecture, evidence, MCP use, and limitations.
+
+## Release Task 3: Automate and verify distribution quality
+
+- [ ] GitHub Actions runs locked install, Ruff, format, mypy, tests with coverage, audit, build, and wheel smoke checks on PRs and `main` pushes.
+- [ ] Dependabot is configured for weekly Python dependency review.
+- [ ] Project metadata declares its license, keywords, classifiers, and package data accurately.
+- [ ] The built wheel installs in a clean environment and exposes both Python imports and the five MCP tools.
+
+## Release Task 4: Complete the release audit
+
+- [ ] The committed demo completes a Gaussian generation/evaluation/gate workflow.
+- [ ] Dependency and credential scans have no unmitigated release blocker.
+- [ ] Full pytest coverage, Ruff, formatting, and mypy gates pass.
+- [ ] A mutation check proves a relevant regression test fails when a reviewed condition is inverted.
+- [ ] Five-axis review has no unresolved critical or required findings.
+- [ ] `CAPABILITY_MAP.md`, specs, plan, and task evidence all reflect the completed product.
