@@ -245,3 +245,12 @@ None blocking. Threshold decisions, regression, and formal privacy mechanisms re
 3. Connect generation, evaluation, and quality-gate public APIs through session state.
 4. Render comparison and criterion evidence plus candidate/report downloads.
 5. Verify with Streamlit testing, full quality gates, and a real browser at desktop and mobile sizes.
+
+---
+
+# Implementation Plan: SynthGuard `mcp-server`
+
+1. Implement and test a symlink-aware allowlisted path policy.
+2. Add typed MCP input contracts and a framework-independent tool adapter over public APIs.
+3. Register the exact five-tool FastMCP stdio surface and normalize domain failures as tool errors.
+4. Add an installable entry point, client configuration docs, discovery tests, and end-to-end offline verification.

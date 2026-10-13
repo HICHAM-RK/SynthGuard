@@ -467,3 +467,15 @@
 - [x] Cover report generation and initial app rendering with automated tests.
 - [x] Verify desktop/mobile browser states, accessibility structure, and clean console.
 - [x] Full tests, Ruff, formatting, and mypy pass.
+
+---
+
+# SynthGuard `mcp-server` Task List
+
+- [ ] Path allowlist accepts contained paths and rejects outside, traversal, and symlink escapes.
+- [ ] Five typed tools expose profile, generation, evaluation, gating, and full workflow.
+- [ ] Tool adapters import public domain APIs and never duplicate calculations.
+- [ ] Expected failures surface stable safe MCP tool errors without partial success.
+- [ ] FastMCP discovery returns exactly the documented tool names.
+- [ ] README includes a ready-to-use stdio configuration and allowlist instructions.
+- [ ] MCP tests and all repository quality gates pass offline.
