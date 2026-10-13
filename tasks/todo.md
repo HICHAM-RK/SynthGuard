@@ -487,27 +487,42 @@
 ## Release Task 1: Lock contracts and executable expectations
 
 - [x] `SPEC-release-quality.md` defines release assets, CI gates, security evidence, packaging verification, and boundaries.
-- [ ] Failing tests describe required public assets, demo-data shape, package metadata, documentation links, and MCP import safety.
+- [x] Failing tests describe required public assets, demo-data shape, package metadata, documentation links, and MCP import safety.
 
 ## Release Task 2: Add portfolio and security assets
 
-- [ ] A fictional, non-sensitive demo CSV supports the fast local workflow.
-- [ ] Architecture and threat-model documents explain boundaries, evidence flow, controls, and residual risks.
-- [ ] License, contribution guide, security policy, and changelog are complete and linked.
-- [ ] README clearly explains the problem, differentiation, complete feature set, demo, architecture, evidence, MCP use, and limitations.
+- [x] A fictional, non-sensitive demo CSV supports the fast local workflow.
+- [x] Architecture and threat-model documents explain boundaries, evidence flow, controls, and residual risks.
+- [x] License, contribution guide, security policy, and changelog are complete and linked.
+- [x] README clearly explains the problem, differentiation, complete feature set, demo, architecture, evidence, MCP use, and limitations.
 
 ## Release Task 3: Automate and verify distribution quality
 
-- [ ] GitHub Actions runs locked install, Ruff, format, mypy, tests with coverage, audit, build, and wheel smoke checks on PRs and `main` pushes.
-- [ ] Dependabot is configured for weekly Python dependency review.
-- [ ] Project metadata declares its license, keywords, classifiers, and package data accurately.
-- [ ] The built wheel installs in a clean environment and exposes both Python imports and the five MCP tools.
+- [x] GitHub Actions runs locked install, Ruff, format, mypy, tests with coverage, audit, build, and wheel smoke checks on PRs and `main` pushes.
+- [x] Dependabot is configured for weekly Python dependency review.
+- [x] Project metadata declares its license, keywords, classifiers, and package data accurately.
+- [x] The built wheel installs in a clean environment and exposes both Python imports and the five MCP tools.
 
 ## Release Task 4: Complete the release audit
 
-- [ ] The committed demo completes a Gaussian generation/evaluation/gate workflow.
-- [ ] Dependency and credential scans have no unmitigated release blocker.
-- [ ] Full pytest coverage, Ruff, formatting, and mypy gates pass.
-- [ ] A mutation check proves a relevant regression test fails when a reviewed condition is inverted.
-- [ ] Five-axis review has no unresolved critical or required findings.
-- [ ] `CAPABILITY_MAP.md`, specs, plan, and task evidence all reflect the completed product.
+- [x] The committed demo completes a Gaussian generation/evaluation/gate workflow.
+- [x] Dependency and credential scans have no unmitigated release blocker.
+- [x] Full pytest coverage, Ruff, formatting, and mypy gates pass.
+- [x] A mutation check proves a relevant regression test fails when a reviewed condition is inverted.
+- [x] Five-axis review has no unresolved critical or required findings.
+- [x] `CAPABILITY_MAP.md`, specs, plan, and task evidence all reflect the completed product.
+
+**Verified release evidence:**
+
+- `uv run pytest --cov=synthguard --cov-report=term-missing --cov-fail-under=85` — 126 passed, 86.46% coverage.
+- `uv run ruff check .`, `uv run ruff format --check .`, and `uv run mypy src/synthguard` — passed.
+- `pip-audit 2.10.1` against the locked Python 3.12 environment — no known vulnerabilities found.
+- `uv build` plus clean-wheel install and `scripts/smoke_distribution.py` — passed.
+- Committed Gaussian demo — pass, 0.7966 statistical quality, zero exact/near copies, 0.7977 DCR protection.
+- Inclusive-threshold `>=` to `>` mutation — boundary test failed as expected, then the source was restored.
+
+## Checkpoint: SynthGuard 0.1.0 complete
+
+- [x] Every capability-map module is implemented and verified.
+- [x] Human and MCP interfaces consume one tested domain workflow.
+- [x] The project is ready to publish as a local-first portfolio release.

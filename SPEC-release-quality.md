@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved for implementation. This module packages and verifies the implemented product without changing its domain behavior.
+Implemented and verified. This module packages and verifies the implemented product without changing its domain behavior.
 
 ## Objective
 

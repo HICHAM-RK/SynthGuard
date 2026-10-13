@@ -1,57 +1,120 @@
 # SynthGuard
 
-SynthGuard is a local-first synthetic-data quality gate. Its goal is to generate candidate tabular datasets, measure whether they remain useful without copying source records too closely, and expose reproducible decisions through a Streamlit studio and MCP tools.
+**Synthetic data, with receipts.**
 
-The implemented `data-core`, `evaluation-core`, and `quality-gate` modules safely generate immutable Gaussian Copula or CTGAN runs, compare each candidate with its source, and apply explicit thresholds to select the strongest passing candidate. The Streamlit studio and MCP server are tracked as the next modules in `CAPABILITY_MAP.md`.
+SynthGuard is a local-first quality gate for tabular synthetic data. It generates competing datasets, measures whether they preserve useful patterns, checks whether they copy source records too closely, and returns a deterministic pass/fail decision with the evidence behind it.
 
-## Why this project exists
+It runs on your machine, requires no API key, and exposes the same workflow through a Streamlit studio and five MCP tools.
 
-Development and ML teams need realistic data, but real customer or operational datasets may be sensitive. Generating rows is only the beginning: a useful system must preserve structure, record exactly how data was produced, expose limitations, and eventually prove both utility and privacy risk. SynthGuard is being built around that evidence-first workflow.
+## The problem it solves
 
-## Current capabilities
+Teams often need realistic data for development, testing, demos, and machine-learning experiments, but real customer data can be sensitive. A synthetic-data generator alone does not answer the important questions:
 
-- Local CSV ingestion with byte, row, encoding, and structural limits
-- Deterministic column profiling with advisory identifier and sensitive-column flags
-- Reviewable SDV metadata and validated semantic-type overrides
-- Gaussian Copula and CPU CTGAN generation through one contract
-- Immutable run directories containing synthetic CSV, metadata, and a manifest
-- SHA-256 source fingerprints and artifact checksums
-- SDMetrics statistical quality scores for distributions and column relationships
-- Exact-copy detection plus seeded, bounded mixed-type nearest-neighbor evidence
-- SDMetrics DCR baseline protection with explicit metric provenance
-- Optional leakage-safe classification utility using weighted F1 on held-out real rows
-- One typed, JSON-serializable evaluation result shared by future interfaces
-- Configurable, explainable pass/fail thresholds with deterministic candidate ranking
-- Streamlit audit studio with a built-in demo, comparison workspace, and CSV/report downloads
-- Five-tool FastMCP stdio server with an explicit local filesystem allowlist
-- Structured errors that avoid echoing source values or unrestricted paths
-- Offline automated tests, static typing, linting, and formatting gates
+- Did the generated data preserve distributions and relationships?
+- Did it reproduce exact or nearly identical source records?
+- Can a model trained on it still work on real held-out data?
+- Which candidate is safest and most useful under the team's own limits?
+- Can someone reproduce and audit the decision later?
+
+SynthGuard turns those questions into one repeatable experiment. It does **not** claim that synthetic data is automatically anonymous, private, or compliant.
+
+## Why it is different
+
+Most demos stop after generating a CSV. SynthGuard treats generation as the start of the workflow:
+
+1. **Competing candidates** — run Gaussian Copula, CTGAN, or both behind one interface.
+2. **Three evidence dimensions** — statistical fidelity, copy-risk indicators, and optional downstream ML utility remain visible instead of being hidden in one score.
+3. **Policy as data** — every threshold, criterion result, rank, and reason is returned in a typed record.
+4. **Deterministic selection** — the same evidence and policy produce the same ranking and winner.
+5. **Local by design** — source data is not uploaded to a model or cloud service.
+6. **Two real interfaces, one domain workflow** — Streamlit serves people; MCP serves coding agents without duplicating calculations.
+7. **Reproducible artifacts** — each run stores reviewed metadata, checksums, configuration, versions, warnings, and timing.
+
+## What is included
+
+| Feature | What it does | Why it matters |
+|---|---|---|
+| Single CSV input | Accepts one bounded UTF-8 table and preserves the source unchanged | Keeps the first release focused and safe to run locally |
+| Automatic column detection | Infers numeric, categorical, boolean, datetime, ID, and potentially sensitive columns for review | Removes setup work without pretending inference is always correct |
+| Two synthesis methods | Produces a fast Gaussian Copula candidate and an optional CPU CTGAN candidate | Lets users compare a statistical baseline with a neural generator |
+| Statistical comparison | Scores column distributions and column-pair relationships with SDMetrics | Shows whether synthetic data still behaves like the source |
+| Exact and near-copy checks | Counts identical rows, mixed-type nearest neighbors, and DCR baseline protection | Surfaces memorization and record-proximity risk |
+| ML utility test | Trains equivalent classifiers on real and synthetic training data, then evaluates both on one untouched real holdout | Measures whether synthetic data can support a concrete downstream task |
+| Configurable quality gate | Applies inclusive user thresholds and explains every pass, fail, or skipped criterion | Replaces an unexplained “good” score with an auditable decision |
+| Comparison workspace | Ranks candidates and displays weak columns, privacy evidence, utility, and criterion details | Makes tradeoffs visible before download |
+| Downloadable outputs | Exports the selected synthetic CSV and a Markdown evidence report | Makes results useful outside the app |
+| MCP workflow | Offers profile, generate, evaluate, gate, and full-workflow tools over stdio | Lets local agents use the same controlled pipeline |
+| Automated verification | Tests domain logic, UI rendering, MCP discovery, paths, packaging, types, style, and coverage | Demonstrates engineering quality beyond a notebook demo |
+
+## Architecture
+
+```text
+CSV → profile/review → generate candidates → evaluate evidence → apply policy
+                                                               │
+                                            ┌──────────────────┴───────────────┐
+                                            ▼                                  ▼
+                                   Streamlit studio                       MCP server
+```
+
+The domain modules are independent from Streamlit and FastMCP. `evaluation-core` measures evidence; `quality-gate` alone decides whether that evidence meets the supplied policy. See the [architecture guide](docs/ARCHITECTURE.md), [capability map](CAPABILITY_MAP.md), and [threat model](docs/THREAT_MODEL.md).
 
 ## Quick start
 
-Requirements: Python 3.12 and `uv`.
+Requirements: Python 3.12 and [`uv`](https://docs.astral.sh/uv/).
 
 ```bash
-uv sync --all-extras
+uv sync --locked --all-extras
 ```
 
-Launch the local studio:
+Launch the studio:
 
 ```bash
 uv run streamlit run src/synthguard/studio_ui/app.py
 ```
 
-Use **Try the demo dataset** for a no-setup walkthrough, or upload one UTF-8 CSV up to 25 MB. The studio never renders source rows and keeps session artifacts in a local temporary directory.
+Choose **Try the demo dataset** for a no-setup walkthrough, or upload one UTF-8 CSV up to 25 MB. A committed fictional dataset is also available at [examples/demo_customers.csv](examples/demo_customers.csv).
 
-### MCP setup
+For the fastest programmatic demo, generate one Gaussian candidate:
 
-Start the stdio server directly:
+```python
+from pathlib import Path
+
+from synthguard.data_core import GenerationMethod
+from synthguard.quality_gate import GatePolicy
+from synthguard.workflow import run_workflow
+
+run = run_workflow(
+    source_csv=Path("examples/demo_customers.csv"),
+    output_directory=Path("runs"),
+    methods=(GenerationMethod.GAUSSIAN_COPULA,),
+    row_count=100,
+    random_seed=42,
+    classification_target=None,  # Set to "churned" to include the ML utility experiment.
+    policy=GatePolicy(),
+)
+
+print(run.gate.winner_candidate_id)
+print(run.report_markdown)
+```
+
+Each successful candidate creates:
+
+```text
+runs/<run-id>/
+├── synthetic.csv
+├── metadata.json
+└── manifest.json
+```
+
+## MCP setup
+
+Allow only the source/output roots the server needs, then start its stdio transport:
 
 ```bash
 SYNTHGUARD_ALLOWED_ROOTS="/path/to/data:/path/to/output" uv run synthguard-mcp
 ```
 
-Example MCP client configuration:
+Example client configuration:
 
 ```json
 {
@@ -67,126 +130,65 @@ Example MCP client configuration:
 }
 ```
 
-On Windows, separate allowed roots with `;` instead of `:`. If the variable is omitted, only the server process’s current working directory is allowed. The server exposes `profile_dataset`, `generate_synthetic_data`, `evaluate_synthetic_data`, `gate_candidates`, and `run_synthguard_workflow`.
+Use `;` instead of `:` between allowed roots on Windows. If the variable is omitted, only the server process's current working directory is allowed.
 
-```python
-from pathlib import Path
+The five tools are:
 
-from synthguard.data_core import (
-    GenerationMethod,
-    GenerationRequest,
-    ProfileRequest,
-    SemanticType,
-    generate_candidate,
-    profile_csv,
-)
+- `profile_dataset`
+- `generate_synthetic_data`
+- `evaluate_synthetic_data`
+- `gate_candidates`
+- `run_synthguard_workflow`
 
-source = Path("customers.csv")
-profile = profile_csv(ProfileRequest(source_path=source))
+They return aggregate evidence and artifact paths, never source rows. See [SPEC-mcp-server.md](SPEC-mcp-server.md) for the exact boundary.
 
-for column in profile.columns:
-    print(column.name, column.semantic_type, column.is_sensitive_candidate)
+## Evidence and decisions
 
-result = generate_candidate(
-    GenerationRequest(
-        source_path=source,
-        output_directory=Path("runs"),
-        method=GenerationMethod.GAUSSIAN_COPULA,
-        row_count=1_000,
-        random_seed=42,
-        column_overrides={"customer_id": SemanticType.IDENTIFIER},
-    )
-)
+The default gate evaluates:
 
-print(result.artifacts.synthetic_csv)
-print(result.artifacts.manifest_json)
-```
+- minimum statistical quality;
+- maximum exact-copy rate;
+- maximum near-copy rate;
+- minimum DCR baseline-protection score; and
+- minimum utility retention when utility is requested or required.
 
-Evaluate the generated candidate:
+A failed candidate still receives a score and rank so users can diagnose it, but only a passing candidate can win. If none pass, SynthGuard returns no winner instead of silently choosing a failed dataset.
 
-```python
-from synthguard.evaluation_core import EvaluationRequest, evaluate_candidate
-
-evaluation = evaluate_candidate(
-    EvaluationRequest(
-        real_csv=source,
-        synthetic_csv=result.artifacts.synthetic_csv,
-        metadata_json=result.artifacts.metadata_json,
-        classification_target="churned",  # Optional categorical or boolean target
-        random_seed=42,
-    )
-)
-
-print(evaluation.statistical.overall_score)
-print(evaluation.privacy.exact_match_count)
-print(evaluation.privacy.dcr_baseline_protection_score)
-print(evaluation.utility.utility_retention if evaluation.utility else None)
-```
-
-Apply explicit thresholds and compare candidates:
-
-```python
-from synthguard.quality_gate import CandidateEvidence, GatePolicy, GateRequest, apply_quality_gate
-
-gate = apply_quality_gate(
-    GateRequest(
-        candidates=(CandidateEvidence(candidate_id="gaussian", evaluation=evaluation),),
-        policy=GatePolicy(
-            min_statistical_score=0.75,
-            max_exact_match_rate=0.0,
-            max_near_duplicate_rate=0.05,
-            min_dcr_score=0.5,
-            min_utility_retention=0.8,
-        ),
-    )
-)
-
-print(gate.winner_candidate_id)
-print(gate.candidates[0].failed_criteria)
-```
-
-Each successful run creates:
-
-```text
-runs/<run-id>/
-├── synthetic.csv
-├── metadata.json
-└── manifest.json
-```
-
-The manifest records the source fingerprint, method, requested seed, row count, dependency versions, warnings, duration, and artifact checksums.
-
-## Development commands
+## Development and verification
 
 ```bash
-uv run pytest --cov=synthguard --cov-report=term-missing
+uv run pytest --cov=synthguard --cov-report=term-missing --cov-fail-under=85
 uv run ruff check .
 uv run ruff format --check .
 uv run mypy src/synthguard
+uv build
 ```
 
-## Architecture and progress
-
-- `CAPABILITY_MAP.md` defines module ownership and build order.
-- `SPEC-data-core.md` defines the implemented module contract.
-- `SPEC-evaluation-core.md` defines the implemented evidence contract.
-- `SPEC-quality-gate.md` defines the implemented decision and ranking contract.
-- `SPEC-studio-ui.md` defines the implemented local product experience.
-- `SPEC-mcp-server.md` defines the implemented agent tool and filesystem-safety contract.
-- `tasks/plan.md` records architecture decisions and risks.
-- `tasks/todo.md` records acceptance criteria and verification evidence.
-- `AGENTS.md` defines the rules Codex and other coding agents must follow.
+GitHub Actions repeats lint, formatting, type checking, tests, coverage, dependency audit, package build, and isolated wheel smoke checks for every pull request and push to `main`.
 
 ## Safety and limitations
 
-- Processing is local and does not require an API key.
-- Only one CSV table is supported in the current module.
-- Sensitive-column detection is advisory and must be reviewed by a person.
-- Synthetic output is not automatically anonymous, private, or compliant.
-- Exact matches, near-neighbor distances, and DCR are risk indicators—not privacy guarantees.
-- Statistical and ML scores describe this candidate under documented baselines; they do not prove fitness for every workload.
-- `evaluation-core` returns independent evidence only. `quality-gate` applies user-visible thresholds and rankings, but a passing result is still not a privacy or compliance certification.
-- The locked SDV API controls internal sampling state, so exact output may differ across dependency versions even when the requested seed is unchanged.
+- Processing is local and makes no remote model call.
+- One single-table CSV is supported; relational and time-series synthesis are out of scope.
+- Sensitive-column and identifier detection is advisory and requires human review.
+- Exact copies, nearest-neighbor distances, and DCR are risk indicators, not privacy guarantees.
+- No differential privacy, anonymity proof, regulatory certification, or production approval is provided.
+- Statistical and ML scores apply only to the tested candidate, task, split, and policy.
+- CTGAN can be slow on CPU and cannot promise byte-identical output across dependency versions.
 - Do not commit source datasets or generated user runs.
 
-SynthGuard calls a candidate “passing” only under the exact policy returned with the gate result. Generated artifacts remain synthetic candidates, not approved safe datasets.
+Read [SECURITY.md](SECURITY.md) and the [threat model](docs/THREAT_MODEL.md) before using real data.
+
+## Project documents
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Threat model](docs/THREAT_MODEL.md)
+- [Release evidence](docs/RELEASE_EVIDENCE.md)
+- [Security policy](SECURITY.md)
+- [Contributing guide](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
+- [MIT license](LICENSE)
+- [Release-quality specification](SPEC-release-quality.md)
+- [Agent workflow](AGENTS.md)
+
+SynthGuard calls a candidate “passing” only under the exact policy stored with its result. The final decision to release or use that dataset remains a human responsibility.

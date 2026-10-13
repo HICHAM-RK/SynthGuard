@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: "0.12.0"
+          enable-cache: true
+
+      - name: Install Python
+        run: uv python install 3.12
+
+      - name: Install locked dependencies
+        run: uv sync --locked --all-extras --python 3.12
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+      - name: Type check
+        run: uv run mypy src/synthguard
+
+      - name: Test with coverage
+        run: uv run pytest --cov=synthguard --cov-report=term-missing --cov-fail-under=85
+
+      - name: Audit locked runtime dependencies
+        run: >-
+          uvx --python 3.12 --from pip-audit==2.10.1 pip-audit
+          --path .venv/lib/python3.12/site-packages --progress-spinner off
+
+      - name: Build distributions
+        run: uv build
+
+      - name: Smoke test built wheel
+        run: |
+          wheel_path=$(find dist -maxdepth 1 -name 'synthguard-*.whl' -print -quit)
+          test -n "$wheel_path"
+          uv venv --python 3.12 --clear /tmp/synthguard-wheel-env
+          uv pip install --python /tmp/synthguard-wheel-env/bin/python "$wheel_path"
+          /tmp/synthguard-wheel-env/bin/python scripts/smoke_distribution.py
