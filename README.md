@@ -18,6 +18,39 @@ Teams often need realistic data for development, testing, demos, and machine-lea
 
 SynthGuard turns those questions into one repeatable experiment. It does **not** claim that synthetic data is automatically anonymous, private, or compliant.
 
+## The core idea, in plain language
+
+Imagine that a company has a useful table of customer, health, employee, or financial records. Developers need realistic data for testing and machine-learning work, but sharing the original rows may expose private information.
+
+SynthGuard creates a new, artificial table that tries to preserve the useful patterns of the original. It then checks the candidate before allowing it to be released:
+
+```text
+Private CSV
+    ↓
+Review detected column types
+    ↓
+Generate one or more synthetic candidates
+    ↓
+Measure statistical similarity, copy risk, and ML usefulness
+    ↓
+Apply the selected quality thresholds
+    ↓
+PASS → download the synthetic CSV and evidence report
+FAIL → inspect the evidence and improve the next run
+```
+
+A failed result does **not** mean generation crashed. It means a synthetic CSV was produced, but at least one configured quality or privacy-risk threshold was not satisfied. SynthGuard deliberately keeps failed candidates from looking release-ready.
+
+## How a run works
+
+1. **Upload one CSV** or use the fictional demo dataset. Processing stays on the local machine.
+2. **Review the inferred schema.** SynthGuard identifies numeric, categorical, boolean, datetime, ID-like, and potentially sensitive columns. These suggestions remain reviewable.
+3. **Choose generation settings.** Select Gaussian Copula for a fast statistical baseline, CTGAN for a slower neural candidate, or compare both. Set the row count and random seed.
+4. **Optionally choose a prediction target.** This enables the downstream ML utility experiment.
+5. **Set the release policy.** The default thresholds cover statistical quality, exact and near copies, record distance, and optional utility retention.
+6. **Generate and evaluate.** Every candidate is measured using the same pipeline and ranked from the recorded evidence.
+7. **Export only with context.** A passing winner can be downloaded with its Markdown evaluation report. Failed candidates remain visible for diagnosis but are not presented as approved outputs.
+
 ## Why it is different
 
 Most demos stop after generating a CSV. SynthGuard treats generation as the start of the workflow:
@@ -62,17 +95,30 @@ The domain modules are independent from Streamlit and FastMCP. `evaluation-core`
 
 Requirements: Python 3.12 and [`uv`](https://docs.astral.sh/uv/).
 
+Clone the repository and enter the project:
+
+```bash
+git clone <your-private-repository-url>
+cd SynthGuard
+```
+
+Install the locked dependencies:
+
 ```bash
 uv sync --locked --all-extras
 ```
 
-Launch the studio:
+Launch the web app:
 
 ```bash
 uv run streamlit run src/synthguard/studio_ui/app.py
 ```
 
+Open the local address printed by Streamlit, normally [http://localhost:8501](http://localhost:8501). The application runs locally and does not require an API key.
+
 Choose **Try the demo dataset** for a no-setup walkthrough, or upload one UTF-8 CSV up to 25 MB. A committed fictional dataset is also available at [examples/demo_customers.csv](examples/demo_customers.csv).
+
+To stop the app, return to the terminal and press `Ctrl+C`.
 
 For the fastest programmatic demo, generate one Gaussian candidate:
 
