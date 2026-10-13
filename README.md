@@ -23,6 +23,7 @@ Development and ML teams need realistic data, but real customer or operational d
 - One typed, JSON-serializable evaluation result shared by future interfaces
 - Configurable, explainable pass/fail thresholds with deterministic candidate ranking
 - Streamlit audit studio with a built-in demo, comparison workspace, and CSV/report downloads
+- Five-tool FastMCP stdio server with an explicit local filesystem allowlist
 - Structured errors that avoid echoing source values or unrestricted paths
 - Offline automated tests, static typing, linting, and formatting gates
 
@@ -41,6 +42,32 @@ uv run streamlit run src/synthguard/studio_ui/app.py
 ```
 
 Use **Try the demo dataset** for a no-setup walkthrough, or upload one UTF-8 CSV up to 25 MB. The studio never renders source rows and keeps session artifacts in a local temporary directory.
+
+### MCP setup
+
+Start the stdio server directly:
+
+```bash
+SYNTHGUARD_ALLOWED_ROOTS="/path/to/data:/path/to/output" uv run synthguard-mcp
+```
+
+Example MCP client configuration:
+
+```json
+{
+  "mcpServers": {
+    "synthguard": {
+      "command": "uv",
+      "args": ["run", "--project", "/path/to/SynthGuard", "synthguard-mcp"],
+      "env": {
+        "SYNTHGUARD_ALLOWED_ROOTS": "/path/to/data:/path/to/output"
+      }
+    }
+  }
+}
+```
+
+On Windows, separate allowed roots with `;` instead of `:`. If the variable is omitted, only the server process’s current working directory is allowed. The server exposes `profile_dataset`, `generate_synthetic_data`, `evaluate_synthetic_data`, `gate_candidates`, and `run_synthguard_workflow`.
 
 ```python
 from pathlib import Path
@@ -145,6 +172,7 @@ uv run mypy src/synthguard
 - `SPEC-evaluation-core.md` defines the implemented evidence contract.
 - `SPEC-quality-gate.md` defines the implemented decision and ranking contract.
 - `SPEC-studio-ui.md` defines the implemented local product experience.
+- `SPEC-mcp-server.md` defines the implemented agent tool and filesystem-safety contract.
 - `tasks/plan.md` records architecture decisions and risks.
 - `tasks/todo.md` records acceptance criteria and verification evidence.
 - `AGENTS.md` defines the rules Codex and other coding agents must follow.

@@ -48,7 +48,7 @@ def build_markdown_report(
                 f"- Composite score: {decision.composite_score:.3f}",
                 f"- Statistical quality: {evaluation.statistical.overall_score:.3f}",
                 f"- Exact-match rate: {evaluation.privacy.exact_match_rate:.3f}",
-                (f"- Near-duplicate rate: {near_duplicate_rate:.3f}"),
+                f"- Near-duplicate rate: {near_duplicate_rate:.3f}",
                 (
                     "- DCR baseline protection: "
                     f"{evaluation.privacy.dcr_baseline_protection_score:.3f}"

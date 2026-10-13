@@ -472,10 +472,10 @@
 
 # SynthGuard `mcp-server` Task List
 
-- [ ] Path allowlist accepts contained paths and rejects outside, traversal, and symlink escapes.
-- [ ] Five typed tools expose profile, generation, evaluation, gating, and full workflow.
-- [ ] Tool adapters import public domain APIs and never duplicate calculations.
-- [ ] Expected failures surface stable safe MCP tool errors without partial success.
-- [ ] FastMCP discovery returns exactly the documented tool names.
-- [ ] README includes a ready-to-use stdio configuration and allowlist instructions.
-- [ ] MCP tests and all repository quality gates pass offline.
+- [x] Path allowlist accepts contained paths and rejects outside, traversal, and symlink escapes.
+- [x] Five typed tools expose profile, generation, evaluation, gating, and full workflow.
+- [x] Tool adapters import public domain APIs and never duplicate calculations.
+- [x] Expected failures surface stable safe MCP tool errors without partial success.
+- [x] FastMCP discovery returns exactly the documented tool names.
+- [x] README includes a ready-to-use stdio configuration and allowlist instructions.
+- [x] MCP tests and all repository quality gates pass offline.

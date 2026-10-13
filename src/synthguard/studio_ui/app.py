@@ -19,7 +19,7 @@ from synthguard.data_core import (
 from synthguard.evaluation_core import EvaluationCoreError
 from synthguard.quality_gate import GatePolicy, QualityGateError
 from synthguard.studio_ui.views import render_profile, render_results
-from synthguard.studio_ui.workflow import StudioRun, run_studio_workflow
+from synthguard.workflow import WorkflowRun, run_workflow
 
 _MAX_UPLOAD_BYTES = 25_000_000
 
@@ -77,7 +77,7 @@ def main() -> None:
     ):
         try:
             with st.spinner("Training candidates and assembling evidence…"):
-                st.session_state["studio_run"] = run_studio_workflow(
+                st.session_state["studio_run"] = run_workflow(
                     source_csv=source_path,
                     output_directory=_session_root() / "runs",
                     methods=config[0],
@@ -89,7 +89,7 @@ def main() -> None:
         except (DataCoreError, EvaluationCoreError, QualityGateError) as error:
             st.error(f"{error.code}: {error.message}")
     run = st.session_state.get("studio_run")
-    if isinstance(run, StudioRun):
+    if isinstance(run, WorkflowRun):
         render_results(run)
 
 

@@ -5,6 +5,7 @@ description = "Local-first synthetic data quality gate with Streamlit and MCP in
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "fastmcp>=2.13,<4",
     "pandas>=2.2,<3",
     "pydantic>=2.8,<3",
     "scikit-learn>=1.7,<2",
@@ -12,6 +13,9 @@ dependencies = [
     "sdv>=1.20,<2",
     "streamlit>=1.40,<2",
 ]
+
+[project.scripts]
+synthguard-mcp = "synthguard.mcp_server.server:run_server"
 
 [dependency-groups]
 dev = [

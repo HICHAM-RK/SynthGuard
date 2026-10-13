@@ -6,8 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from synthguard.data_core import DatasetProfile
-
-from .workflow import StudioRun
+from synthguard.workflow import WorkflowRun
 
 
 def render_profile(profile: DatasetProfile) -> None:
@@ -46,7 +45,7 @@ def render_profile(profile: DatasetProfile) -> None:
                 st.write(f"**{warning.code}** — {warning.message}")
 
 
-def render_results(run: StudioRun) -> None:
+def render_results(run: WorkflowRun) -> None:
     st.subheader("3 · Compare the evidence")
     if run.gate.winner_candidate_id:
         st.success(
@@ -125,7 +124,7 @@ def render_results(run: StudioRun) -> None:
     )
 
 
-def _render_candidate_details(run: StudioRun, candidate_id: str) -> None:
+def _render_candidate_details(run: WorkflowRun, candidate_id: str) -> None:
     decision = next(item for item in run.gate.candidates if item.candidate_id == candidate_id)
     evaluation = run.evaluations[candidate_id]
     st.markdown("#### Gate criteria")

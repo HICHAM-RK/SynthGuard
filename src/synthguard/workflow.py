@@ -1,4 +1,4 @@
-"""Framework-independent orchestration used by the Streamlit studio."""
+"""Shared end-to-end orchestration for every SynthGuard interface."""
 
 from __future__ import annotations
 
@@ -19,19 +19,18 @@ from synthguard.quality_gate import (
     GateResult,
     apply_quality_gate,
 )
-
-from .reporting import build_markdown_report
+from synthguard.reporting import build_markdown_report
 
 
 @dataclass(frozen=True, slots=True)
-class StudioRun:
+class WorkflowRun:
     generations: dict[str, GenerationResult]
     evaluations: dict[str, EvaluationResult]
     gate: GateResult
     report_markdown: str
 
 
-def run_studio_workflow(
+def run_workflow(
     *,
     source_csv: Path,
     output_directory: Path,
@@ -40,7 +39,7 @@ def run_studio_workflow(
     random_seed: int,
     classification_target: str | None,
     policy: GatePolicy,
-) -> StudioRun:
+) -> WorkflowRun:
     """Generate, evaluate, and rank selected methods through public APIs."""
 
     generations: dict[str, GenerationResult] = {}
@@ -77,7 +76,7 @@ def run_studio_workflow(
             policy=policy,
         )
     )
-    return StudioRun(
+    return WorkflowRun(
         generations=generations,
         evaluations=evaluations,
         gate=gate,
