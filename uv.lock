@@ -1585,7 +1585,7 @@ wheels = [
 
 [[package]]
 name = "rdt"
-version = "1.22.0"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "faker" },
@@ -1595,9 +1595,9 @@ dependencies = [
     { name = "scikit-learn" },
     { name = "scipy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/ed/56090e74558e9c5a7c311349e8289c350b706a84123a0f239ef16e6b1dc8/rdt-1.22.0.tar.gz", hash = "sha256:85f29aa98df8fcac3d5ec89d6b66d758b4e8994fa80579579cda63835fbeff2f", size = 66547, upload-time = "2026-08-07T16:53:42.957Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/83/ab/0fd92d74ac8488c9b4e8427f40e534ade56db6b93c6597be767029f04c23/rdt-2.0.0.tar.gz", hash = "sha256:0e3d30de0258b62ba138066e947acb8f8092b0a4c27dfe66715f5385401fbbbb", size = 62620, upload-time = "2026-10-15T18:08:29.855Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/82/56/da1e9b42d541d6701ea366d293f6a3255100ef32b5a96eee3b9be2869704/rdt-1.22.0-py3-none-any.whl", hash = "sha256:0db31dfc8ff33450604aa9ec6d0ade1fcf8d9efa8b73594fdcb798ae35355590", size = 75480, upload-time = "2026-08-07T16:53:41.674Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/54/a3749eff6ca6a10f687ae0dee2e265c786ffbf06bc2ece9ac968477c0a03/rdt-2.0.0-py3-none-any.whl", hash = "sha256:7ba9f058f94e7389439deb5cbb727e68989daaade6fda57d8618508181cb0333", size = 71729, upload-time = "2026-10-15T18:08:28.104Z" },
 ]
 
 [[package]]
@@ -1789,7 +1789,7 @@ wheels = [
 
 [[package]]
 name = "sdv"
-version = "1.38.5"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "boto3" },
@@ -1807,9 +1807,9 @@ dependencies = [
     { name = "sdmetrics" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3a/e1/638e87ebf73db7bacceb190b1370ebf1147b9c9fe651fd0fb0a4acc00553/sdv-1.38.5.tar.gz", hash = "sha256:9087aa89b5c643e1847f85b720db52f02fefaf6d8c8555900ec0754f5d310b85", size = 186685, upload-time = "2026-09-28T20:22:13.68Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5d/e0/9db7b0ffb060c3e0589863fc807f94f61f490042952ecf8f8f25c63b0d2e/sdv-2.0.0.tar.gz", hash = "sha256:cb7ed2c1e1ef5612ed68d6f8b90d546d9c8963659cd5072b4f3a79c30d496812", size = 169329, upload-time = "2026-10-15T21:00:24.147Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/7b/689ed26aedd7943ac21fa49eef442d5251749197f4001dc4c2589c009451/sdv-1.38.5-py3-none-any.whl", hash = "sha256:ed1978c58c62237a56daafb21fb9dbe7f4b14352dbd18dcf795bee6f77c3c106", size = 215610, upload-time = "2026-09-28T20:22:11.953Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/06/0d16b8a9dd2552c732cb1bd08b9eb41ee242879f6af2d4e19fbaa940d4fc/sdv-2.0.0-py3-none-any.whl", hash = "sha256:81bc093c7e003c9bcc1537a461fec9073e822fcec202087534d28b9f7293a6d6", size = 192532, upload-time = "2026-10-15T21:00:21.952Z" },
 ]
 
 [[package]]
@@ -1942,7 +1942,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.8,<3" },
     { name = "scikit-learn", specifier = ">=1.7,<2" },
     { name = "sdmetrics", specifier = ">=0.30,<1" },
-    { name = "sdv", specifier = ">=1.20,<2" },
+    { name = "sdv", specifier = ">=1.20,<3" },
     { name = "streamlit", specifier = ">=1.40,<2" },
 ]
 
