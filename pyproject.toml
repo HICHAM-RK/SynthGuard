@@ -52,8 +52,6 @@ include = [
     "/CHANGELOG.md",
     "/CONTRIBUTING.md",
     "/SECURITY.md",
-    "/CAPABILITY_MAP.md",
-    "/SPEC-*.md",
     "/docs",
     "/pyproject.toml",
 ]

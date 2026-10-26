@@ -76,7 +76,7 @@ def test_project_metadata_is_release_ready() -> None:
 
     sdist_includes = metadata["tool"]["hatch"]["build"]["targets"]["sdist"]["include"]
     assert "/docs" in sdist_includes
-    assert "/SPEC-*.md" in sdist_includes
+    assert "/README.md" in sdist_includes
 
 
 def test_ci_enforces_every_release_gate() -> None:

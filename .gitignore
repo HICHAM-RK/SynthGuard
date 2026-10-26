@@ -16,3 +16,9 @@ build/
 dist/
 runs/
 data/private/
+
+# Local agent instructions and internal planning documents
+AGENTS.md
+CAPABILITY_MAP.md
+SPEC-*.md
+tasks/

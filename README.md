@@ -100,7 +100,7 @@ CSV → profile/review → generate candidates → evaluate evidence → apply p
                                    Streamlit studio                       MCP server
 ```
 
-The domain modules are independent from Streamlit and FastMCP. `evaluation-core` measures evidence; `quality-gate` alone decides whether that evidence meets the supplied policy. See the [architecture guide](docs/ARCHITECTURE.md), [capability map](CAPABILITY_MAP.md), and [threat model](docs/THREAT_MODEL.md).
+The domain modules are independent from Streamlit and FastMCP. `evaluation-core` measures evidence; `quality-gate` alone decides whether that evidence meets the supplied policy. See the [architecture guide](docs/ARCHITECTURE.md) and [threat model](docs/THREAT_MODEL.md).
 
 ## Quick start
 
@@ -230,7 +230,7 @@ Example client configuration:
 
 Use `;` instead of `:` between allowed roots on Windows. If the variable is omitted, only the server process's current working directory is allowed.
 
-The server returns aggregate evidence and validated artifact paths, never source rows. Paths outside the allowlist—including symlink escapes—are rejected before domain work starts. See [SPEC-mcp-server.md](SPEC-mcp-server.md) for the exact contract and security boundary.
+The server returns aggregate evidence and validated artifact paths, never source rows. Paths outside the allowlist—including symlink escapes—are rejected before domain work starts. See the [architecture guide](docs/ARCHITECTURE.md) and [threat model](docs/THREAT_MODEL.md) for the public contract and security boundary.
 
 Test the MCP implementation directly:
 
@@ -284,7 +284,5 @@ Read [SECURITY.md](SECURITY.md) and the [threat model](docs/THREAT_MODEL.md) bef
 - [Contributing guide](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
 - [MIT license](LICENSE)
-- [Release-quality specification](SPEC-release-quality.md)
-- [Agent workflow](AGENTS.md)
 
 SynthGuard calls a candidate “passing” only under the exact policy stored with its result. The final decision to release or use that dataset remains a human responsibility.

@@ -37,4 +37,4 @@ Each generation writes to a temporary directory below a validated output root. O
 
 A generator can produce plausible-looking rows while losing correlations, copying records, or becoming useless for ML. SynthGuard keeps those dimensions separate, shows the evidence, and applies user-owned thresholds. A pass means only that the candidate met that recorded policy.
 
-The complete ownership map is in [CAPABILITY_MAP.md](../CAPABILITY_MAP.md).
+These boundaries are enforced by package imports, typed contracts, and regression tests.
